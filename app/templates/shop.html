@@ -1,0 +1,168 @@
+{%extends "base.html"%}
+{%block content%}
+
+
+<div class='container'>
+	<form action='{{url_for("shop")}}' name='cost' method="post" enctype='multipart/from-data'>
+		<div class='row'>
+			<div class='col-md-9'>			
+			
+					<table style='border:2px solid black;width:100%'>
+						<thead style='border:2px solid black'>
+							<th style='min-width:100px;text-align:center;border-right:2px solid black'>Product</th>
+							<th style='min-width:75px;text-align:center'>Price</th>
+							<th style='min-width:50px;text-align:center;border-left:1px solid black'>Quantity</th>
+							<th style='min-width:75px;text-align:center;border-left:2px solid black'>Total price</th>
+						</thead>
+						<tr style='height:25px;border-top:2px solid black;border-bottom:2px solid black'>
+							<td colspan='4' style='text-align:center;'><b>General:</b></td>
+						</tr>
+						{%set k=1%}
+						{%set all=1+3*current_user.companies.count()+current_user.promotions_count()%}
+						<tr style='height:50px'>
+							<td style='text-align:center;border-right:2px solid black'>Additional Company</td>
+							<td style='text-align:center;border-right:1px solid black' id='p{{k}}'>$19.99</td>
+							<td style='border-right:2px solid black;text-align:center'><input id='q{{k}}' type='number' name='add_comp' value='0' min='0' max='99' style='width:40px' onchange='price({{k}},{{all}})'></td>
+							<td id='pr{{k}}' style='text-align:center'></td>
+						</tr>
+						<tr style='height:25px;border-top:2px solid black;border-bottom:2px solid black'>
+							<td colspan='4' style='text-align:center;'><b>Company related:</b></td>
+						</tr>
+						
+						{%for company in current_user.companies%}
+						
+						{%set k=k+1%}
+						<tr style='height:25px;border-bottom:1px solid black'>
+							<td>{{company.name}}:</td><td colspan='3'></td>
+						</tr>
+						<tr style='height:50px;border-bottom:1px solid black'>
+							<td style='text-align:center;border-right:2px solid black'>Additional Promotion</td>
+							<td style='text-align:center;border-right:1px solid black' id='p{{k}}'>$9.99</td>
+							<td style='border-right:2px solid black;text-align:center'><input id='q{{k}}' type='number' name='c_prom{{company.id}}' value='0' min='0' max='99' style='width:40px' onchange='price({{k}},{{all}})'></td>
+							<td id='pr{{k}}' style='text-align:center'></td>
+						</tr>
+						{%set k=k+1%}
+						<tr style='height:50px;border-bottom:1px solid black'>
+							<td style='text-align:center;border-right:2px solid black'>Additional Standard Links</td>
+							<td style='text-align:center;border-right:1px solid black' id='p{{k}}'>$0.99</td>
+							<td style='border-right:2px solid black;text-align:center'><input id='q{{k}}' type='number' name='c_link{{company.id}}' value='0' min='0' max='99' style='width:40px' onchange='price({{k}},{{all}})'></td>
+							<td id='pr{{k}}' style='text-align:center'></td>
+						</tr>
+						{%set k=k+1%}
+						<tr style='height:50px;border-bottom:1px solid black'>
+							<td style='text-align:center;border-right:2px solid black'>Additional Sponsored Links</td>
+							<td style='text-align:center;border-right:1px solid black' id='p{{k}}'>$9.99</td>
+							<td style='border-right:2px solid black;text-align:center'><input id='q{{k}}' type='number' name='c_spon{{company.id}}' value='0' min='0' max='99' style='width:40px' onchange='price({{k}},{{all}})'></td>
+							<td id='pr{{k}}' style='text-align:center'></td>
+						</tr>
+						
+						{%endfor%}
+						
+						<tr style='height:25px;border-top:2px solid black;border-bottom:2px solid black'>
+							<td colspan='4' style='text-align:center;'><b>Promotion related:</b></td>
+						</tr>
+						
+						{%set k=1+current_user.companies.count()*3%}
+						{%for promotion in current_user.owned_promotions()%}
+
+						<tr style='height:25px;border-bottom:1px solid black'>
+							<td> {{promotion.url}}:</td><td colspan='3'></td>
+						</tr>
+						{%set k=k+1%}
+						<tr style='height:50px;border-bottom:1px solid black'>
+							<td style='text-align:center;border-right:2px solid black'>Additional Link</td>
+							<td style='text-align:center;border-right:1px solid black' id='p{{k}}'>$0.99</td>
+							<td style='border-right:2px solid black;text-align:center'><input id='q{{k}}' type='number' name='pr_link{{promotion.id}}' value='0' min='0' max='99' style='width:40px' onchange='price({{k}},{{all}})'></td>
+							<td id='pr{{k}}' style='text-align:center'></td>
+						</tr>
+						{%endfor%}
+						<tr style='height:25px;border-top:2px solid black'>
+							<td colspan='3' style='text-align:center;border-right:2px solid black'><b>Sum</b></td><td style='text-align:center;' id='sum'></td>
+						</tr>
+					</table>
+					
+				
+			
+		</div>
+		<div class='col-md-3'>
+			<h3 align='center'>Payment Information</h3>
+			<table>
+				<tr style="height:20px"></tr>
+				<tr>
+					<td>First Name:</td><td style='width:10px'><td>"first_name"</td>
+				</tr>
+				<tr style="height:10px"></tr>
+				<tr>
+					<td>Last Name:</td><td style='width:10px'><td>"last_name"</td>
+				</tr>
+				<tr style="height:10px"></tr>
+				<tr>
+					<td>Address:</td><td style='width:10px'><td>"address"</td>
+				</tr>
+				<tr style="height:10px"></tr>
+				<tr>
+					<td>Credit Card:</td><td style='width:10px'><td>0000 0000 0000 0000</td>
+				</tr>
+
+			</table>
+			<br>
+			<h3 align='center'><a href="{{url_for('index')}}"><button class='btn btn-primary'>Edit Payment Information</button></a></h3>
+			<br>
+			<br>
+			<br>
+			<br>
+			<h4 align='center'>The total is: <b id='tot'>$0.00</b></h4>
+			<br>
+				<input align='center' style='width:100%' type='submit' id='buy' value='Buy' disabled='disabled' class='btn btn-success'>
+			
+		</div>
+	</div>
+	</form>
+</div>
+
+
+<script type='text/javascript'>
+
+
+function price(k,all){
+
+	var id1="#p"+k;
+	var id2="#q"+k;
+	var id3="#pr"+k;
+
+	var price=parseFloat($(id1).text().replace('$',''));
+	var quant=$(id2).val()
+	var total=price*quant
+
+	$(id3).text('$'+total.toFixed(2));
+
+	var ids=[];
+	var sum_total=0;
+
+	$.each(new Array(all),function(index){
+		index=index+1
+		ids.push("#pr"+index)});
+	
+	$.each(ids,function(index,value){
+		if($(value).text()){
+		sum_total=sum_total+parseFloat($(value).text().replace('$',''))
+	}
+	});
+	
+
+	$('#sum').text('$'+sum_total.toFixed(2));
+	$('#tot').text('$'+sum_total.toFixed(2));
+
+	if(sum_total==0){
+		$("#buy").attr('disabled','disabled');
+	}
+	else{
+		$("#buy").attr('disabled',false);
+	};
+}
+
+</script>
+
+
+
+{%endblock%}

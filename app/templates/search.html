@@ -1,0 +1,312 @@
+{%extends "base.html"%}
+{%block content%}
+
+<h2 align='center'>Search for:</h2>
+<br>
+<br>
+<ul class="nav nav-pills nav-justified">
+	<li ><a data-toggle="pill" href="#achievement">Achievements</a></li>
+    <li><a data-toggle="pill" href="#user">Users</a></li>
+    <li><a data-toggle="pill" href="#company">Companies</a></li>
+    <li><a data-toggle="pill" href="#story">Stories</a></li>
+</ul>
+
+<div class="tab-content">
+	<div id="achievement" class="tab-pane fade">
+		<br>
+    	<br>
+		<div class="container">
+		     <form method="post" name="ach_form" style="background-color:#f1f1f1;width:50%;margin-left:auto;margin-right:auto" action="{{url_for('query_ach')}}">
+		        {{ach_form.hidden_tag()}}
+
+		        <table align="center">
+		        	<tr style="height:30px;">
+			        </tr>
+			        <tr>
+			            <td class="form-table">Keyword: </td>
+			            <td></td>
+			            <td align='right' class="form-table" colspan='2'>{{ach_form.keyword(size=30)}}</td>
+			            <td>
+			                {%for error in ach_form.keyword.errors%}
+			                <span style="color:red;">[{{error}}]</span><br>
+			                {%endfor%}
+			            </td>
+			        </tr>
+			        
+			        
+			        <tr style="height:30px;">
+			        </tr>
+			        <tr>
+			          <td colspan="5" align="center">
+			            <input class="btn btn-success" type="submit" value="Search" style="width:100px">
+			          </td>
+			        </tr>
+			        <tr style="height:30px;">
+			        </tr>
+
+		        </table>    
+		    </form>
+		</div>
+	</div>
+    <div id="company" class="tab-pane fade">
+    	<br>
+    	<br>
+		<div class="container">
+		     <form method="post" name="comp_form" style="background-color:#f1f1f1;width:50%;margin-left:auto;margin-right:auto" action="{{url_for('query_company')}}">
+		        {{comp_form.hidden_tag()}}
+
+		        <table align="center">
+		        	<tr style="height:30px;">
+			        </tr>
+			        <tr>
+			            <td class="form-table">Company's name: </td>
+			            <td></td>
+			            <td class="form-table" colspan='2'>{{comp_form.company_name(size=20)}}</td>
+			            <td>
+			                {%for error in comp_form.company_name.errors%}
+			                <span style="color:red;">[{{error}}]</span><br>
+			                {%endfor%}
+			            </td>
+			        </tr>
+			        <tr style="height:10px;">
+			        </tr>
+			        <tr>
+			            <td class="form-table">City: </td>
+			            <td></td>
+			            <td class="form-table" colspan='2'>{{comp_form.city(size=20)}}</td>
+			            <td>
+			                {%for error in comp_form.city.errors%}
+			                <span style="color:red;">[{{error}}]</span><br>
+			                {%endfor%}
+			            </td>
+			        </tr>
+			        <tr style="height:10px;">
+			        </tr>
+			        <tr>
+				        <td class="form-table" rowspan='3'>Rating:</td>
+				  		<td></td>
+				        <td align='right' style='min-width:65px'>min </td>
+				        <td align='right'>{{comp_form.rating_low(size=4)}}</td>
+				        <td>
+				            {%for error in comp_form.rating_low.errors%}
+				            <span style="color:red;">[{{error}}]</span><br>
+				            {%endfor%}
+				        </td>
+			      	</tr>
+			      	<tr style="height:5px;">
+			        </tr>
+			      	<tr>
+				        <td></td>
+				        <td align='right'>max </td>
+				        <td align='right'>{{comp_form.rating_high(size=4)}}</td>
+				        <td>
+				            {%for error in comp_form.rating_high.errors%}
+				            <span style="color:red;">[{{error}}]</span><br>
+				            {%endfor%}
+				        </td>
+			        </tr>
+			        <tr style="height:10px;">
+			        </tr>
+			        <tr>
+			          <td class="form-table">Maximum distance:</td>
+			          <td></td>
+			          <td align='right' colspan='2'>{{comp_form.distance(size=4)}}</td>
+			          <td></td>
+			          <td>
+			                {%for error in comp_form.distance.errors%}
+			                <span style="color:red;">[{{error}}]</span><br>
+			                {%endfor%}
+			          </td>
+			        </tr>
+			        <tr style="height:30px;">
+			        </tr>
+			        <tr>
+			          <td colspan="5" align="center">
+			            <input class="btn btn-success" type="submit" value="Search" style="width:100px">
+			          </td>
+			        </tr>
+			        <tr style="height:30px;">
+			        </tr>
+
+		        </table>    
+		    </form>
+		</div>
+	</div>
+	<div id="user" class="tab-pane fade">
+		<br>
+    	<br>
+		<div class="container">
+		     <form method="post" name="user_form" style="background-color:#f1f1f1;width:50%;margin-left:auto;margin-right:auto" action="{{url_for('query_user')}}">
+		        {{user_form.hidden_tag()}}
+
+		        <table align="center">
+		        	<tr style="height:30px;">
+			        </tr>
+			        <tr>
+			            <td class="form-table">User's nickname: </td>
+			            <td></td>
+			            <td class="form-table" colspan='2'>{{user_form.nickname(size=20)}}</td>
+			            <td>
+			                {%for error in user_form.nickname.errors%}
+			                <span style="color:red;">[{{error}}]</span><br>
+			                {%endfor%}
+			            </td>
+			        </tr>
+			        <tr style="height:10px;">
+			        </tr>
+			        <tr>
+				        <td class="form-table" rowspan='3'>Achieved:</td>
+				  		<td></td>
+				        <td align='right' style='min-width:65px'>min </td>
+				        <td align='right'>{{user_form.achieved_low(size=4)}}</td>
+				        <td>
+				            {%for error in user_form.achieved_low.errors%}
+				            <span style="color:red;">[{{error}}]</span><br>
+				            {%endfor%}
+				        </td>
+			      	</tr>
+			      	<tr style="height:5px;">
+			        </tr>
+			      	<tr>
+				        <td></td>
+				        <td align='right'>max </td>
+				        <td align='right'>{{user_form.achieved_high(size=4)}}</td>
+				        <td>
+				            {%for error in user_form.achieved_high.errors%}
+				            <span style="color:red;">[{{error}}]</span><br>
+				            {%endfor%}
+				        </td>
+			        </tr>
+			        <tr style="height:10px;">
+			        </tr>
+			        <tr>
+				        <td class="form-table" rowspan='3'>Points:</td>
+				  		<td></td>
+				        <td align='right' style='min-width:65px'>min </td>
+				        <td align='right'>{{user_form.points_low(size=4)}}</td>
+				        <td>
+				            {%for error in user_form.points_low.errors%}
+				            <span style="color:red;">[{{error}}]</span><br>
+				            {%endfor%}
+				        </td>
+			      	</tr>
+			      	<tr style="height:5px;">
+			        </tr>
+			      	<tr>
+				        <td></td>
+				        <td align='right'>max </td>
+				        <td align='right'>{{user_form.points_high(size=4)}}</td>
+				        <td>
+				            {%for error in user_form.points_high.errors%}
+				            <span style="color:red;">[{{error}}]</span><br>
+				            {%endfor%}
+				        </td>
+			        </tr>
+			        <tr style="height:10px;">
+			        </tr>
+			        <tr>
+				        <td class="form-table" rowspan='3'>Followers:</td>
+				  		<td></td>
+				        <td align='right' style='min-width:65px'>min </td>
+				        <td align='right'>{{user_form.followers_low(size=4)}}</td>
+				        <td>
+				            {%for error in user_form.followers_low.errors%}
+				            <span style="color:red;">[{{error}}]</span><br>
+				            {%endfor%}
+				        </td>
+			      	</tr>
+			      	<tr style="height:5px;">
+			        </tr>
+			      	<tr>
+				        <td></td>
+				        <td align='right'>max </td>
+				        <td align='right'>{{user_form.followers_high(size=4)}}</td>
+				        <td>
+				            {%for error in user_form.followers_high.errors%}
+				            <span style="color:red;">[{{error}}]</span><br>
+				            {%endfor%}
+				        </td>
+			        </tr>
+			        <tr style="height:30px;">
+			        </tr>
+			        <tr>
+			          <td colspan="5" align="center">
+			            <input class="btn btn-success" type="submit" value="Search" style="width:100px">
+			          </td>
+			        </tr>
+			        <tr style="height:30px;">
+			        </tr>
+
+		        </table>    
+		    </form>
+		</div>
+	</div>
+	<div id="story" class="tab-pane fade">
+		<br>
+    	<br>
+		<div class="container">
+		     <form method="post" name="story_form" style="background-color:#f1f1f1;width:50%;margin-left:auto;margin-right:auto" action="{{url_for('query_story')}}">
+		        {{story_form.hidden_tag()}}
+
+		        <table align="center">
+		        	<tr style="height:30px;">
+			        </tr>
+			        <tr>
+			            <td class="form-table">Story's Title: </td>
+			            <td></td>
+			            <td align='right' class="form-table" colspan='2'>{{story_form.title(size=30)}}</td>
+			            <td>
+			                {%for error in story_form.title.errors%}
+			                <span style="color:red;">[{{error}}]</span><br>
+			                {%endfor%}
+			            </td>
+			        </tr>
+			        <tr style="height:10px;">
+			        </tr>
+			        <tr>
+				        <td class="form-table" rowspan='3'>Edit Date:</td>
+				  		<td></td>
+				        <td align='right' style='min-width:65px'>from </td>
+				        <td align='right'>{{story_form.date_min()}}</td>
+				        <td>
+				            {%for error in story_form.date_min.errors%}
+				            <span style="color:red;">[{{error}}]</span><br>
+				            {%endfor%}
+				        </td>
+			      	</tr>
+			      	<tr style="height:5px;">
+			        </tr>
+			      	<tr>
+				        <td></td>
+				        <td align='right'>to </td>
+				        <td align='right'>{{story_form.date_max()}}</td>
+				        <td>
+				            {%for error in story_form.date_max.errors%}
+				            <span style="color:red;">[{{error}}]</span><br>
+				            {%endfor%}
+				        </td>
+			        </tr>
+			        
+			        <tr style="height:30px;">
+			        </tr>
+			        <tr>
+			          <td colspan="5" align="center">
+			            <input class="btn btn-success" type="submit" value="Search" style="width:100px">
+			          </td>
+			        </tr>
+			        <tr style="height:30px;">
+			        </tr>
+
+		        </table>    
+		    </form>
+		</div>
+	</div>
+
+</div>
+
+
+
+
+
+
+{%endblock%}

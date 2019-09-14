@@ -1,0 +1,60 @@
+<div class='row'>
+    {%if g.user.max_score%}
+    {%set progress_pr=g.user.total*100/g.user.max_score|float%}
+    {%else%}
+    {%set progress_pr=0|float%}
+    {%endif%}
+
+    {%if g.user.max_desired%}
+    {%set progress_des=g.user.total*100/g.user.max_desired|float%}
+    {%else%}
+    {%set progress_des=0|float%}
+    {%endif%}
+    <div class='col-md-3' style="color:black;height:78%;min-height:78%;margin-left:-90px;border-right:1px solid black;position:fixed">
+        <div class='row'>
+            
+            <div class='col-md-5'>
+                <h5 align='center'><b>{{g.user.nickname}}</b></h5>
+                {%if g.user.imgurl%}
+                <div class="thumbnail" style="max-width:80px;width:auto;height:auto;margin-left:auto;margin-right:auto;">
+                    <img src="{{url_for('static',filename=g.user.imgurl)}}" alt="{{g.user.nickname}} profile picture" height="100" width="70"/>
+                </div>
+                {%else%}
+                <div class="thumbnail" style="max-width:80px;width:auto;height:auto;margin-left:auto;margin-right:auto;">
+                    <img src="{{url_for('static',filename='images/rest/anonymous.png')}}" alt="{{g.user.nickname}} profile picture" height="100" width="70"/>
+                </div>
+                {%endif%}
+            </div>
+            <div class='col-md-7'>
+                <br>
+                <br>
+                <table style='width:100%'>
+                    <tr><td align='left'><b>Achieved: </b></td><td style="width:10px"></td><td align="right"><b id="ach-count">{{g.user.achieved.count()}}</b></td></tr>
+                    <tr><td><b>Total score: </b></td><td style="width:10px"></td><td align="right"><b id="user-total">{{g.user.total}}</b></td></tr>
+                    <tr><td><b>Total desired: </b></td><td style="width:10px"></td><td align="right"><b id="user-des">{{g.user.max_desired}}</b></td></tr>
+                    
+                </table>
+            </div>
+        </div>
+        <div class='row'>
+            <h4 align='center' id='header-abs'>Absolute progress: {{'%0.1f'|format(progress_pr)}}%</h4>
+            <div class="progress" style="background-color:#e2e7e7;width:80%;margin-left:auto;margin-right:auto">
+                <div class="progress-bar" id='bar-abs' role="progressbar" aria-valuenow="{{progress_pr}}" aria-valuemin="0" aria-valuemax="100" style="width:{{progress_pr}}%;color:#303a3a">
+                    {{'%0.1f'|format(progress_pr)}}%
+                </div>
+            </div>
+        </div>
+        <br>
+        <div class='row'>
+            <h4 align='center' id='header-rel'>Relative progress: {{'%0.1f'|format(progress_des)}}%</h4>
+            <div class="progress" style="background-color:#e2e7e7;width:80%;margin-left:auto;margin-right:auto">
+                <div class="progress-bar progress-bar-success" id='bar-rel' role="progressbar" aria-valuenow="{{progress_des}}" aria-valuemin="0" aria-valuemax="100" style="width:{{progress_des}}%;color:#303a3a">
+                    {{'%0.1f'|format(progress_des)}}%
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <div class='col-md-9'>
+    </div>
+ </div>

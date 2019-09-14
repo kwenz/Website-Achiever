@@ -1,0 +1,311 @@
+{%extends "base.html"%}
+{%block content%}
+
+
+
+
+
+<div class='well' style='width:100%'>
+    <div class='row'>
+        <div class='col-md-3'>
+            <div class='thumbnail' style="height:250px;width:200px">
+                <img src="{{url_for('static',filename=company.imgurl)}}" alt="{{company.name}} image" style="width:95%;height:95%;padding-top:5px;padding-bottom:0px;"/>
+            </div>
+        </div>
+        <div class='col-md-6'>
+            <table>
+                {%if company.rating%}
+                <tr><td colspan='2' style='min-width:200px'>
+                    
+                        {%for i in range(company.rating|int)%}
+                        <span class="glyphicon glyphicon-star" aria-hidden="true" style="color:gold"></span>
+                        {%endfor%}
+                        {%for i in range(10-company.rating|int)%}
+                        <span class="glyphicon glyphicon-star-empty" aria-hidden="true" style="color:gold"></span>
+                        {%endfor%}
+                    </td>
+                    <td align="center">
+                        <b>  {{'%0.1f'|format(company.rating)}}/10</b> 
+                        
+                    </td>
+                </tr>
+                {%endif%}
+                {%if company.reviews.count()>0%}
+                <tr>
+                    <td><a href='#reviews'>{{company.reviews.count()}}</a> review{%if company.reviews.count()>1%}s{%endif%}</td>
+                </tr>
+                {%endif%}
+                <tr style="height:40px;"></tr>
+                <tr><td><b>{{company.name}}</b></td>
+                    <td style="width:35px"></td>
+                    <td><b>Tel:</b> {{company.tel}}</td>
+                </tr>
+                <tr style="height:10px;"></tr>
+                <tr><td>{{company.address}}</td>
+                    <td style="width:35px"></td>
+                    <td><b>E-mail:</b> {{company.email}}</td>
+                </tr>
+                <tr style="height:10px;"></tr>
+                <tr><td>{{company.city}}, {{company.zipcode}}</td>
+                    <td style="width:35px"></td>
+                    <td><b>Website: </b><a href="{{company.url}}">{{company.url}}</a></td>
+                </tr>                    
+            </table>
+        </div>
+        <div class="col-md-3">
+        <div class="thumbnail" style="height:230px;width:230px">
+            <img src="https://maps.googleapis.com/maps/api/staticmap?center={{company.lat}},{{company.lon}}&zoom=12&size=220x220&markers={{company.lat}},{{company.lon}}&key={{key}}"/>
+        </div>
+    </div>
+    </div>
+    
+    <br>
+    <br>
+    <div class="row">
+
+        <div class="col-md-8">
+            {{company.description}}
+        </div>
+
+    </div>
+</div>
+
+{%if current_user.id==company.owner.id%}
+<div class='row'>
+    <div class='col-md-7'>
+
+        <br>
+        <p>Achievement links left: {{company.links_avi}}</p>
+        <p>Sponsored achievement links left: {{company.sponsored_avi}}</p>
+        <p>Promotions left: {{company.promos_avi}}</p>
+                
+    </div>
+    <div class='col-md-5'>
+
+        {%if company.promos_avi%}
+        <a href="{{url_for('new_promotion')}}"><button class='btn btn-success'>Add Promotion</button></a>
+        {%endif%}
+        
+        <a href="{{url_for('edit_company',id=company.id)}}"><button class='btn btn-primary'>Edit Information</button></a>
+        
+        <a href="{{url_for('append_achs_comp',id=company.id)}}"><button class='btn btn-primary'>Edit Links</button></a>
+            
+           
+        <a href="{{url_for('remove_company',company_id=company.id)}}"><button class='btn btn-warning'>Delete</button></a>
+    </div>
+</div>
+<hr style='width:100%;border:grey solid 1px;'>
+{%endif%}
+<!-- 
+<button onclick='geocode("{{company.address}}","{{company.city}}","{{company.zipcode}}","{{company.name}}","{{company.email}}")' class="btn btn-warning">Get location</button>
+
+<button onclick='dist_to_comp("{{g.user.lat}}","{{g.user.lon}}","{{company.lat}}","{{company.lon}}")' class="btn btn-warning">Get distnace</button>     
+ -->
+<br>
+
+
+<div class="container" style="min-height:200px">
+    <ul class="nav nav-pills">
+        <li><a data-toggle="pill" href="#achies">Achievements linked</a></li>
+        <li><a data-toggle="pill" href="#promos">Promotions</a></li>
+    </ul>
+    <div class="tab-content">
+        <div id="achies" class="tab-pane fade">
+            <div style="position:relative">
+            {%if company.of_interest_count()>0%}
+            <br>
+                <p style="margin-left:50px">Sort multiple columns simultaneously by holding down the shift key.</p>
+
+                <table id="list_sponsored" class="tablesorter" border="0" cellpadding="0" cellspacing="1" >
+                    <thead>
+                        <th class="header">Category</th>
+                        <th class="header">Subcategory</th>
+                        <th class="header">Name</th>
+                        <th class="header">Level</th>
+                        <th class="header">Points</th>
+                        {%if current_user.id==company.owner.id%}
+                        <th class="header">Sponsored</th>
+                        {%endif%}
+                        <th class="header">Info</th>
+                    </thead>
+                    <tbody>
+                        {%set k=1%}
+                        {%for achievement in company.of_interest()%}
+                        {%if k%2==0%}
+                        <tr class="even">
+                        {%else%}
+                        <tr class="odd">
+                        {%endif%}
+                            <td style="text-align:center">{{achievement.group.subcategory.category.name}}</td>
+                            <td style="text-align:center">{{achievement.group.subcategory.name}}</td>  
+                            <td style="text-align:center">{{achievement.group.name}}</td>
+                            <td style="text-align:center">{%if achievement.level!=None%}{{achievement.level}}{%else%}N/A{%endif%}</td>
+                            <td style="text-align:center">{{achievement.points}}</td>
+
+                            {%if current_user.id==company.owner.id%}
+                            <td style="text-align:center">{%if achievement.is_sponsored(company)%}Yes{%else%}No{%endif%}</td>
+                            {%endif%}
+
+                            <td style="text-align:center;"><a href="{{url_for('ach_info',id=achievement.id)}}"><b>Details</b></a></td>
+                        </tr>
+                        {%set k=k+1%}
+                        {%endfor%}
+                    </tbody>
+                </table>
+
+            {%else%}
+            <h3>No achievements linked yet.</h3>
+            {%endif%}
+            </div>
+            <br>
+            <br>
+        </div>
+       
+
+        <div id="promos" class="tab-pane fade">
+            <br>
+            {%if company.promotions.count()>0%}
+            <div class="well" style="width:550px">
+                {%for promotion in company.promotions%}
+                {%if current_user.role=="user"%}
+                <div class='thumbnail' style="height:120px;width:500px" onclick="add_click({{promotion.id}})">
+                {%else%}
+                <div class='thumbnail' style="height:120px;width:500px">
+                {%endif%}
+                    <a href="{{promotion.url}}" ><img src="{{url_for('static',filename=promotion.imgurl)}}" alt="Promotion" style="width:95%;height:95%;padding-top:5px;padding-bottom:0px;" /></a>
+                </div>
+                <br>
+                {%endfor%}
+            </div>
+
+                
+            {%else%}
+
+            {%if current_user.id==company.owner.id%}
+            <h3>No promotions added</h3>
+            {%else%}
+            <h3>No promotions available.</h3>
+            {%endif%}
+
+            {%endif%}
+            <br>
+        </div>
+    </div>
+</div>
+
+
+{%if current_user.role=='user'%}
+
+<div class="well" style="width:60%" id="reviews">
+    <form action="" method="post" name="post" >
+        {{form.hidden_tag()}}
+        <div class="form-group">
+            <table>
+                <tr>
+                    <td align="left"><h4>Write a review:</h4></td>
+                    <td align="right">Your rating: </td>
+                    <td align="right">{{form.rating}}</td>
+                </tr>
+                <tr style="height:20px">
+                </tr>
+                <tr>
+                    <td colspan='3'>
+                    {{form.review(cols=89,rows=7)}}
+                    <td>
+                    <td align="right">
+                        {%for error in form.review.errors%}
+                        <span style="color:red;">[{{error}}]</span><br>
+                        {%endfor%}
+                    </td>
+                </tr>
+                <tr style="height:20px">
+                </tr>
+                <tr>
+                    <td><button type="submit" class="btn btn-primary">Submit</button></td>
+                    <td></td>
+                </tr>
+            </table>
+        </div>
+    </form>
+</div>
+<br>
+{%endif%}
+
+
+{%if company.reviews.count()>0%}
+<h3 align='center'>Reviews</h3>
+<br>
+<div class="reviews">
+    {%for review in reviews.items%}
+        {%include 'review.html'%}
+    {%endfor%}
+</div>
+<br>
+
+<nav>
+    <ul class="pager">
+        <li class="previous">
+            {%if reviews.has_prev%}<a href="{{url_for('comp_info',name=company.name,email=company.email,page=reviews.prev_num)}}"><span aria-hidden="true">&larr;</span> Newer</a>
+            {%else%}<a style="color:black"><span aria-hidden="true">&larr;</span> Newer</a>{%endif%}
+        </li>
+        <li class="next">
+            {%if reviews.has_next%}<a href="{{url_for('comp_info',name=company.name,email=company.email,page=reviews.next_num)}}">Older <span aria-hidden="true">&rarr;</span></a>
+            {%else%}<a style="color:black">Older <span aria-hidden="true">&rarr;</span></a>{%endif%}
+        </li>
+    </ul>
+</nav>
+{%endif%}
+
+
+
+<script type='text/javascript'>
+// function geocode(address,city,zipcode,name,email){
+//         $.post("{{url_for('geocode')}}",{
+//             address:address,
+//             city:city,
+//             zipcode:zipcode,
+//             name:name,
+//             email:email
+//         }).done(function(data){
+//             console.log(data.lat);
+//             console.log(data.lon)
+//         });
+// };
+
+// function dist_to_comp(user_lat,user_lon,comp_lat,comp_lon){
+//         $.post("{{url_for('dist_to_comp')}}",{
+//             u_lat:user_lat,
+//             u_lon:user_lon,
+//             c_lat:comp_lat,
+//             c_lon:comp_lon
+//         }).done(function(data){
+//             console.log('Distance in km:');
+//             console.log(data.dist)
+//         });
+// };
+
+
+
+function add_click(pr_id){
+
+    $.post("{{url_for('add_click')}}",
+    {   
+        ach_id:'C',
+        pr_id:pr_id,
+    }).done(function(data){
+
+    });
+};
+
+
+
+$(document).ready(function() {
+    $("#list_sponsored").tablesorter( {sortList: [[0,0], [1,0], [2,0], [3,0]]} ); 
+                });
+</script>
+
+<script type='text/javascript' src="{{url_for('static',filename='tablesorter/jquery.tablesorter.js')}}"></script> 
+
+<script type='text/javascript' src="{{url_for('static',filename='comments.js')}}"></script>
+
+{%endblock%}

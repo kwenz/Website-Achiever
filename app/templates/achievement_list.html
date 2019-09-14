@@ -1,0 +1,58 @@
+{%extends 'base.html'%}
+{%block content%}
+
+
+
+<script type='text/javascript'>
+
+$(document).ready(function() {
+
+                $("#achievement_list").tablesorter( {sortList: [[0,0]]} ); 
+
+            });
+</script>
+
+<h3 align='center'>Achievements</h3>
+<br>
+
+<table id="achievement_list" class="tablesorter" border="0" cellpadding="0" cellspacing="1" style='margin-left:auto;margin-right:auto'>
+                        <thead>
+                            <th class="header">Category</th>
+                            <th class="header">Subcategory</th>
+                            <th class="header">Name</th>
+                            <th class="header">Level</th>
+                            <th class="header">Points</th>
+                            <th class="header">Info</th>
+                        </thead>
+                        <tbody>
+                            {%set k=1%}
+                            {%for achievement in achs%}
+                            {%if k%2==0%}
+                            <tr class="even" id="ac{{k}}">
+                            {%else%}
+                            <tr class="odd" id="ac{{k}}">
+                            {%endif%}
+                                <td>{{achievement.group.subcategory.category.name}}</td>
+
+                                <td>{{achievement.group.subcategory.name}}</td>  
+
+                                <td>{{achievement.group.name}}</td>
+
+                                <td>{%if achievement.level!=None%}{{achievement.level}}{%else%}N/A{%endif%}</td>
+
+                                <td>{{achievement.points}}</td>
+
+                                <td style="text-align:center;"><a href="{{url_for('ach_info',id=achievement.id)}}"><b>Details</b></a></td>
+
+                            </tr>
+                            {%set k=k+1%}
+                            {%endfor%}
+                        </tbody>
+                    </table>
+                <script type='text/javascript' src="{{url_for('static',filename='tablesorter/jquery.tablesorter.js')}}"></script>
+
+
+
+
+{%endblock%}
+

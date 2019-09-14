@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <link type="text/css" rel="stylesheet" href="{{url_for('static',filename='stylesheet.css')}}"/>
+    <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+    
+
+    <title>Achievements</title>
+</head>
+
+<body>
+
+    <div class="container" style='margin-top:25px;margin-bottom:50px'>
+
+      <form class="form-signin" method="post" name="signin" style="background-color:#f1f1f1">
+        {{form.hidden_tag()}}
+
+        <h2 align="center" class="form-signin-heading" style="margin-left:auto;margin-right:auto;">Please sign in</h2>
+        <br>
+        <table align="center">
+        <tr>
+            <td class="form-table">Username: </td>
+            <td class="form-table">{{form.username(size=30)}}</td>
+            <td>
+                {%for error in form.username.errors%}
+                <span style="color:red;">[{{error}}]</span><br>
+                {%endfor%}
+            </td>
+        </tr>
+        <tr style="height:10px;">
+        </tr>
+        <tr>
+            <td class="form-table">Password: </td>
+            <td>{{form.password(size=30)}}</td>
+            <td>
+                {%for error in form.password.errors%}
+                <span style="color:red;">[{{error}}]</span><br>
+                {%endfor%}
+            </td>
+        </tr>
+        <tr style="height:10px;">
+        </tr>
+        <tr>
+          <td colspan="2" align="right">
+            <div class="checkbox">
+              {{ form.remember_me }} Remember me
+            </div>
+          </td>
+        </tr>
+        <tr style="height:30px;">
+        </tr>
+        <tr>
+          <td colspan="2" align="center">
+            <input class="btn btn-success" type="submit" value="Sign In" style="width:100px">
+          </td>
+        </tr>
+
+        </table>
+        
+      </form>
+      <br>
+      <div class='container'>
+        {%for message in get_flashed_messages()%}
+            <p>{{message}}</p>
+        {%endfor%}
+      </div>
+    </div>
+    <br>
+
+    <footer class="footer" style='background-color:rgb(34,34,34);border-top:1px solid rgb(8,8,8)'>
+      <div class="container">
+        <p class="text-muted" style='padding-top:8px'>The Achiever company ltd.</p>
+      </div>
+    </footer>
+
+</body>
+</html>

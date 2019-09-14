@@ -1,0 +1,205 @@
+{%extends 'base.html'%}
+{%block content%}
+
+
+<script type='text/javascript'>
+
+$(document).ready(function() {
+
+                $("#achievement_list").tablesorter( {sortList: [[0,0]]} ); 
+
+            });
+</script>
+
+<h3 align='center'>Achievements</h3>
+<br>
+<div class='row'>
+    <div class='col-md-9'>
+        <table id="achievement_list" class="tablesorter" border="0" cellpadding="0" cellspacing="1" style='margin-left:auto;margin-right:auto;width:100%'>
+                        <thead>
+                            <th class="header">Category</th>
+                            <th class="header">Subcategory</th>
+                            <th class="header">Name</th>
+                            <th class="header">Level</th>
+                            <th class="header">Points</th>
+                            <th class="header">Info</th>
+                            <th class="header">Link</th>
+                            <th class="header">Sponsor</th>
+                        </thead>
+                        <tbody>
+                            {%set k=1%}
+                            {%for achievement in achs%}
+                            {%if k%2==0%}
+                            <tr class="even">
+                            {%else%}
+                            <tr class="odd">
+                            {%endif%}
+                                <td>{{achievement.group.subcategory.category.name}}</td>
+                                <td>{{achievement.group.subcategory.name}}</td>  
+                                <td>{{achievement.group.name}}</td>
+                                <td>{%if achievement.level!=None%}{{achievement.level}}{%else%}N/A{%endif%}</td>
+                                <td>{{achievement.points}}</td>
+                                <td style="text-align:center;"><a href="{{url_for('ach_info',id=achievement.id)}}"><b>Details</b></a></td>
+                                <td style="text-align:center;width:110px">
+                                    {%if achievement in company.of_interest()%}<button class='btn btn-warning' onclick="not_inter({{achievement.id}},{{company.id}},{{k}})" id="help{{k}}">Remove Link</button>
+                                    {%else%}
+                                    <button class='btn btn-success' onclick="get_inter({{achievement.id}},{{company.id}},{{k}})" id="help{{k}}">Add Link</button>
+                                    {%endif%}
+                                </td>
+                                <td style="text-align:center;width:110px" id="sp_cell{{k}}">
+                                    {%if achievement in company.of_interest()%}
+                                        {%if achievement.is_sponsored(company)%}<button class='btn btn-warning' onclick="not_sponsor({{achievement.id}},{{company.id}},{{k}})" id="spon{{k}}">Don't sponsor</button>
+                                        {%else%}
+                                        <button class='btn btn-success' onclick="sponsor({{achievement.id}},{{company.id}},{{k}})" id="spon{{k}}">Sponsor</button>
+                                        {%endif%}
+                                    {%else%}
+                                        N/A
+                                    {%endif%}
+
+                                </td>
+                            </tr>
+                            {%set k=k+1%}
+                            {%endfor%}
+                        </tbody>
+        </table>
+    </div>
+    <div class='col-md-3'>
+        <br>
+        <h4>Links left: <b id="links_left">{{company.links_avi}}</b></h4>
+        <br>
+        <p id='err1'>
+        </p>
+        <br>
+        <h4>Sponsored links left: <b id="spons_left">{{company.sponsored_avi}}</b></h4>
+        <br>
+        <p id='err2'>
+        </p>
+    </div>
+</div>
+
+<br>
+
+<h3 align='center'><a href="{{url_for('comp_info',id=company.id)}}"><button class='btn btn-primary' style='width:200px'>Done</button></a></h3>
+
+<script type='text/javascript' src="{{url_for('static',filename='tablesorter/jquery.tablesorter.js')}}"></script>
+
+
+<script type='text/javascript'> 
+
+function get_inter(ach_id,company_id,k){
+    var idk='#help'+k;
+    var idks='#sp_cell'+k;
+
+    $.post("{{url_for('get_inter')}}",
+    {
+        ach_id:ach_id,
+        company_id:company_id
+    }).done(function(data){
+
+        if(data.res){
+
+            $(idks).empty()
+            $(idks).append("<button class='btn btn-success' onclick='sponsor("+ach_id+","+company_id+","+k+")' id='spon"+k+"'>Sponsor</button>")
+
+            $(idk).text('Remove Link');
+            $(idk).removeClass('btn btn-success').addClass('btn btn-warning');
+            $(idk).attr('onclick','not_inter('+ach_id+','+company_id+','+k+')');
+
+            $('#links_left').text(data.avi)
+
+            $('#err1').text("")
+        }
+        else{
+            $('#err1').text("You don't have any more links available for this company.")
+        };
+    });
+};
+
+function not_inter(ach_id,company_id,k){
+    var idk='#help'+k;
+    var idks='#sp_cell'+k;
+
+    $.post("{{url_for('not_inter')}}",
+    {
+        ach_id:ach_id,
+        company_id:company_id
+    }).done(function(data){
+
+        $(idks).empty()
+        $(idks).text("N/A")
+
+        $(idk).text('Add Link');
+        $(idk).removeClass('btn btn-warning').addClass('btn btn-success');
+        $(idk).attr('onclick','get_inter('+ach_id+','+company_id+','+k+')');
+
+        $('#links_left').text(data.avi)
+        $('#spons_left').text(data.spon)
+
+        $('#err1').text("")
+
+    });
+};
+
+
+function sponsor(ach_id,company_id,k){
+    var idk='#spon'+k
+
+    $.post("{{url_for('sponsor')}}",
+    {
+        ach_id:ach_id,
+        company_id:company_id
+    }).done(function(data){
+
+
+
+        if(data.res){
+
+            $(idk).text("Don't Sponsor");
+            $(idk).removeClass('btn btn-success').addClass('btn btn-warning');
+            $(idk).attr('onclick','not_sponsor('+ach_id+','+company_id+','+k+')');
+
+            $('#spons_left').text(data.avi)
+
+            $('#err2').text("")
+        }
+        else{
+            if(data.err){
+                $('#err2').text("Something went wrong.")
+            }
+            else{
+                $('#err2').text("You don't have any more sponsored links available for this company.")
+            };
+        };
+
+    });
+};
+
+function not_sponsor(ach_id,company_id,k){
+
+    var idk='#spon'+k
+
+    $.post("{{url_for('not_sponsor')}}",{
+        ach_id:ach_id,
+        company_id:company_id
+    }).done(function(data){
+
+        if(data.res){
+
+            $(idk).text("Sponsor");
+            $(idk).removeClass('btn btn-warning').addClass('btn btn-success');
+            $(idk).attr('onclick','sponsor('+ach_id+','+company_id+','+k+')');
+
+            $('#spons_left').text(data.avi)
+
+            $('#err2').text("")
+        }
+        else{
+            $('#err2').text("Something went wrong.")
+        };
+
+    });
+};
+</script>
+
+
+{%endblock%}

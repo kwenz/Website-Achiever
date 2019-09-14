@@ -1,0 +1,240 @@
+{%extends "base.html"%}
+{%block content%}
+
+
+
+<script type='text/javascript'>
+
+$(document).ready(function() {
+                $(".subcategory").hide();
+                $(".name-segment").hide();
+                $(".ach_table").hide();
+
+                $("#list_todos").tablesorter( {sortList: [[0,0], [1,0], [2,0], [3,0]]} ); 
+
+                $(".cat-header").click(function() {
+                    children=$(this).siblings('div');
+                    $(children).slideToggle();});
+                
+                $(".subcat-header").click(function() {
+                    children=$(this).siblings('div');
+                    $(children).slideToggle();});
+
+            });
+</script>
+
+<script type='text/javascript' src="{{url_for('static',filename='tablesorter/jquery.tablesorter.js')}}"></script> 
+
+
+{%include 'sidebar.html'%}
+
+
+<div class='row'>
+    <div class='col-md-3'>
+    </div>
+    <div class='col-md-9'>
+        <ul class="nav nav-tabs nav-justified" style="margin-left:20px">
+          <li class="active"><a data-toggle="pill" href="#blocks"><b>Blocks</b></a></li>
+          <li><a data-toggle="pill" href="#table"><b>Table</b></a></li>
+        </ul>
+        <br>
+        <br>
+        <div class='tab-content'>
+
+            <div id="blocks" class="tab-pane fade in active">
+
+                <div class="achievements">
+                    {%for cat in categories%}
+
+                    <div class="category">
+
+                        <div class="cat-header">
+                            <h2 class="cat-name">{{cat.name}}</h2>
+                        </div>
+                        <br>
+                        {%for sub in cat.subcategories.order_by('name') if sub.in_todo(g.user)%}
+
+                        <div class="subcategory">
+                            
+                            <div class="subcat-header">
+                                <h2 class="subcat-name">{{sub.name}}</h2>
+                            </div>
+                            <br>
+                            
+                            <div class="name-segment">
+                                {%for grp in sub.groups.order_by('name') if grp.in_todo(g.user)%}
+                           
+                                <div class="achiev-segment">
+                                                                  
+                                    {%for ach in grp.achievements.order_by('level') if ach in g.user.todo%}
+                                    
+                                    <div class='row' style='width:115% !important'>
+                                        <div class='col-md-5'>
+                                            {%include 'box_td.html'%}
+                                        </div>
+                                        <div class='col-md-3'>
+                                        </div>
+                                        <div class='col-md-4'>
+
+                                        <div class="accordion" id="accordion{{ach.id}}" style="display:inline-block;position:relative;float:right;width:380px;min-width:380px;max-width:350px">
+                                          <div class="accordion-group">
+                                            <div class="accordion-heading">
+                                              <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion{{ach.id}}" href="#help{{ach.id}}">
+                                                <button class='btn btn-success' style='min-width:100%'>Helpers</button>
+                                              </a>
+                                            </div>
+                                            <div id="help{{ach.id}}" class="accordion-body collapse">
+                                              <div class="accordion-inner">
+                                                {%for company in ach.companies_attached()%}
+                                                {%if ach.is_sponsored(company)%}
+                                                    <br>
+                                                    <div class='well' style='width:100%'>
+                                                        <div class='row'>
+                                                            <div class='col-md-3'>
+                                                                <div class='thumbnail' style="height:80px;width:64px;margin-left:auto;margin-right:auto;">
+                                                                    <img src="{{url_for('static',filename=company.imgurl)}}" alt="{{company.name}} image" style="width:95%;height:95%;padding-top:5px;padding-bottom:0px;"/>
+                                                                </div>
+                                                                {%if company.rating%}
+                                                                <h5 align='center'><b>Rating:</b></h5>
+                                                                    <h5 align='center'> {{'%0.1f'|format(company.rating)}}/10</h5>
+                                                                {%endif%}
+                                                            </div>
+                                                            <div class='col-md-9'>
+                                                                <table>
+                                                                    <tr>
+                                                                        <td><b>{{company.name}}</b></td>
+                                                                    </tr>
+                                                                    <tr style="height:10px;"></tr>
+                                                                    <tr>
+                                                                        <td>{{company.address}}, {{company.city}}</td>
+                                                                    </tr>
+                                                                    <tr style='height:5px'></tr>
+                                                                    <tr>
+                                                                        <td>{{company.tel}}</td>
+                                                                    </tr>
+                                                                    <tr style='height:5px'></tr>
+                                                                    <tr>
+                                                                        <td>{{company.email}}</td>
+                                                                    </tr>
+                                                                    <tr style='height:5px'></tr>
+                                                                    <tr>
+                                                                        <td><a href="{{company.url}}">{{company.url}}</a></td>
+                                                                    </tr>
+                                                                    <tr style="height:10px;"></tr>
+                                                                    <tr>
+                                                                        <td> <a href="{{url_for('comp_info',id=company.id)}}">More information</a></td>
+                                                                    </tr>
+                                                                </table>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <br>
+                                                    {%endif%}
+                                                    {%endfor%}
+                                                    <a href="{{url_for('ach_info_todo',id=ach.id)}}"><button class='btn btn-info'>More...</button></a>
+                                                    <br>
+                                              </div>
+                                            </div>
+                                          </div>
+                                          <br>
+                                          <div class="accordion-group">
+                                            <div class="accordion-heading">
+                                              <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion{{ach.id}}" href="#promo{{ach.id}}">
+                                                <button class='btn btn-success' style='min-width:100%'>Promotions</button>
+                                              </a>
+                                            </div>
+                                            <div id="promo{{ach.id}}" class="accordion-body collapse">
+                                              <div class="accordion-inner">
+                                                {%for promotion in ach.random_promotions_attached(3)%}
+                                                <br>
+                                                    {%if current_user.role=="user"%}
+                                                    <div class='thumbnail' style="height:120px;width:100%" onclick="add_click({{promotion.id}},{{ach.id}})">
+                                                    {%else%}
+                                                    <div class='thumbnail' style="height:120px;width:100%">
+                                                    {%endif%}
+                                                        <a href="{{promotion.url}}"><img src="{{url_for('static',filename=promotion.imgurl)}}" alt="Promotion" style="width:95%;height:95%;padding-top:5px;padding-bottom:0px;"/></a>
+                                                    </div>
+                                                {%endfor%}
+                                              </div>
+                                            </div>
+                                          </div>
+                                        </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                    
+                                    {%endfor%}
+
+                                
+                                <br>
+                                <hr style='border:1px solid #303a3a;width:80%;margin-left:auto;margin-right:auto;'>
+                                
+                                {%endfor%}
+                            </div>
+                        </div>
+                        {%endfor%}
+                    </div>
+                    {%endfor%}
+                </div>
+            </div>
+
+            <div id="table" class="tab-pane fade">
+                <div style="position:relative">
+                    {%if g.user.todo.count()>0%}
+                    <p style="margin-left:50px">Sort multiple columns simultaneously by holding down the shift key.</p>
+                    <br>
+                    <table id="list_todos" class="tablesorter" border="0" cellpadding="0" cellspacing="1">
+                        <thead>
+                            <th class="header">Category</th>
+                            <th class="header">Subcategory</th>
+                            <th class="header">Name</th>
+                            <th class="header">Level</th>
+                            <th class="header">Points</th>
+                            <th class="header">Info</th>
+                        </thead>
+                        <tbody>
+                            {%set k=1%}
+                            {%for achievement in g.user.todo%}
+                            {%if k%2==0%}
+                            <tr class="even">
+                            {%else%}
+                            <tr class="odd">
+                            {%endif%}
+                                <td>{{achievement.group.subcategory.category.name}}</td>
+                                <td>{{achievement.group.subcategory.name}}</td>  
+                                <td>{{achievement.group.name}}</td>
+                                <td>{%if achievement.level!=None%}{{achievement.level}}{%else%}N/A{%endif%}</td>
+                                <td>{{achievement.points}}</td>
+                                <td style="text-align:center;"><a href="{{url_for('ach_info_todo',id=achievement.id)}}"><b>Details</b></a></td>
+                            </tr>
+                            {%set k=k+1%}
+                            {%endfor%}
+                        </tbody>
+                    </table>
+                {%endif%}
+            
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+<script type='text/javascript'>
+
+function add_click(pr_id,ach_id){
+
+
+    $.post("{{url_for('add_click')}}",
+    {
+        pr_id:pr_id,
+        ach_id:ach_id
+    }).done(function(data){
+    
+    });
+};
+</script>
+
+{%endblock%}
+

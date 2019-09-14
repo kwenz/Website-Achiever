@@ -1,0 +1,51 @@
+{%extends "base.html"%}
+
+{%block content%}
+
+
+
+
+
+<h1 style="text-align:center">Edit Your Profile</h1>
+
+<br>
+<div class="well">
+    <div class="container">
+        <div class='row'>
+            <div class="col-md-2">
+            </div>
+            <div class='col-md-6'>
+                <form action="" method="post" name="edit" enctype="multipart/form-data">
+                    {{form.hidden_tag()}}
+                    <table>
+                        <tr><td class='form-table'>Profile picture: </td><td align="right"><input type='file' name='file'></td><td>Current url: {{g.user.imgurl}}</td>
+                        </tr>
+                        <tr style="height:10px">
+                        </tr>
+                        <tr><td class='form-table'>Nickname: </td><td align="right">{{form.nickname()}}</td>
+                        </tr>
+                        <tr style="height:10px">
+                        </tr>
+                        <tr>
+                            <td class="form-table">About yourself: </td>
+                            <td align="right">{{form.about_me(cols=32,rows=4)}}</td>
+                        </tr>
+                        <tr style="height:30px">
+                        </tr>
+                        <tr>
+                            <td colspan="2" align='center'><input class="btn btn-success" type="submit" value="Save Changes"></td>
+                        </tr>
+                    </table>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class='container'>
+    {%for message in get_flashed_messages()%}
+        <p>{{message}}</p>
+    {%endfor%}
+</div>
+
+{%endblock%}

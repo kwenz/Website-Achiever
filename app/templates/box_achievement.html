@@ -1,0 +1,109 @@
+{%if achievement in g.user.achieved%}
+
+    {%if achievement.any_allowed(g.user)%}
+
+    <div class='achieved' id="box{{achievement.id}}">
+
+        <div class='row inner-ac-deep' id="inner{{achievement.id}}">
+
+    {%else%}
+
+    <div class='achieved' id="box{{achievement.id}}">
+
+        <div class='row inner-ac' id="inner{{achievement.id}}">
+
+    {%endif%}
+                                                 
+{%elif achievement in g.user.todo%}
+                            
+    <div class='todo' id="box{{achievement.id}}">
+
+        <div class='row inner-td' id="inner{{achievement.id}}">
+
+{%elif achievement.all_required(g.user)%}
+
+
+    <div class='not-achieved' id="box{{achievement.id}}">
+
+        <div class='row inner-na' id="inner{{achievement.id}}">
+
+{%else%}
+
+    <div class='not-achieved disabled' id="box{{achievement.id}}">
+
+        <div class='row inner-na' id="inner{{achievement.id}}">
+
+{%endif%}
+                                    
+            <div class='col-md-7'>
+                <table style='margin-top:0px;min-width:100%;min-height:100px'>
+                    <tr class='box-tr'>
+                        <td  colspan='2'><b>{{achievement.group.name}} {%if achievement.level!=None%}lv. {{achievement.level}}{%endif%}</b></td>                                
+                    </tr>
+                    <tr class='box-tr'>
+                        {%if achievement.altname%}
+                        <td colspan='2'><i>{{achievement.altname}}</i></td>
+                        {%endif%}
+                    </tr>
+                    <tr class='box-tr' style='margin-bottom:10px'>
+                        <td style='text-align:left'><b>{{achievement.points}}p</b></td>
+                        <td style='text-align:right'><a href="{{url_for('ach_info',id=achievement.id)}}"><span class="glyphicon glyphicon-info-sign" aria-hidden="true" style="color:#16249C"></a></td>
+                    </tr>
+                </table>
+            </div>
+                                    
+            <div class='col-md-5'>
+
+                {%if achievement in g.user.achieved%}
+
+                    {%if achievement.any_allowed(g.user)%}
+
+                        <button class='btn bt-achieve btn-xs' style="width:120% !important;margin-top:10px" type="button" disabled='disabled' id="btac{{achievement.id}}" onclick="add_achievement({{achievement.id}})"><b>Achieved</b></button>
+                                                
+                        <button class='btn bt-todo btn-xs' style="width:120% !important;margin-top:5px" type="button" disabled='disabled' id="bttd{{achievement.id}}" onclick="add_todo({{achievement.id}})"><b>To do</b></button>
+         
+                        <button class='btn bt-remove btn-xs' style="width:120% !important;margin-top:5px" type="button" disabled='disabled' id="btrm{{achievement.id}}" onclick="remove_achievement({{achievement.id}})"><b>Remove</b></button>
+
+                    {%else%}
+
+                        <button class='btn bt-achieve btn-xs' style="width:120% !important;margin-top:10px" type="button" disabled='disabled' id="btac{{achievement.id}}" onclick="add_achievement({{achievement.id}})"><b>Achieved</b></button>
+                                                
+                        <button class='btn bt-todo btn-xs' style="width:120% !important;margin-top:5px" type="button" id="bttd{{achievement.id}}" onclick="add_todo({{achievement.id}})"><b>To do</b></button>
+         
+                        <button class='btn bt-remove btn-xs' style="width:120% !important;margin-top:5px" type="button" id="btrm{{achievement.id}}" onclick="remove_achievement({{achievement.id}})"><b>Remove</b></button>
+
+                    {%endif%}
+
+                {%elif achievement in g.user.todo%}
+
+                    <button class='btn bt-achieve btn-xs' style="width:120% !important;margin-top:10px" type="button" id="btac{{achievement.id}}" onclick="add_achievement({{achievement.id}})"><b>Achieved</b></button>
+                                        
+                    <button class='btn bt-todo btn-xs' style="width:120% !important;margin-top:5px" type="button" disabled='disabled' id="bttd{{achievement.id}}" onclick="add_todo({{achievement.id}})"><b>To do</b></button>
+ 
+                    <button class='btn bt-remove btn-xs' style="width:120% !important;margin-top:5px" type="button" id="btrm{{achievement.id}}" onclick="remove_achievement({{achievement.id}})"><b>Remove</b></button>
+
+                {%elif achievement.all_required(g.user)%}
+
+                    <button class='btn bt-achieve btn-xs' style="width:120% !important;margin-top:10px" type="button" id="btac{{achievement.id}}" onclick="add_achievement({{achievement.id}})"><b>Achieved</b></button>
+                                        
+                    <button class='btn bt-todo btn-xs' style="width:120% !important;margin-top:5px" type="button" id="bttd{{achievement.id}}" onclick="add_todo({{achievement.id}})"><b>To do</b></button>
+ 
+                    <button class='btn bt-remove btn-xs' style="width:120% !important;margin-top:5px" type="button" disabled='disabled' id="btrm{{achievement.id}}" onclick="remove_achievement({{achievement.id}})"><b>Remove</b></button>
+
+
+                {%else%}
+
+                    <button class='btn bt-achieve btn-xs' style="width:120% !important;margin-top:10px" type="button" disabled='disabled' id="btac{{achievement.id}}" onclick="add_achievement({{achievement.id}})"><b>Achieved</b></button>
+                                                
+                    <button class='btn bt-todo btn-xs' style="width:120% !important;margin-top:5px" type="button" disabled='disabled' id="bttd{{achievement.id}}" onclick="add_todo({{achievement.id}})"><b>To do</b></button>
+         
+                    <button class='btn bt-remove btn-xs' style="width:120% !important;margin-top:5px" type="button" disabled='disabled' id="btrm{{achievement.id}}" onclick="remove_achievement({{achievement.id}})"><b>Remove</b></button>
+                                        
+
+                {%endif%}
+                                        
+            </div>
+
+        </div>
+
+     </div>

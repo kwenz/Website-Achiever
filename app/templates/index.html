@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <link type="text/css" rel="stylesheet" href="{{url_for('static',filename='stylesheet.css')}}"/>
+    <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+    
+
+    <title>Achievements</title>
+</head>
+<body>
+  <nav class="navbar navbar-inverse navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+          <span class="sr-only">Toggle navigation</span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand"><span class="glyphicon glyphicon-stats" aria-hidden="true" style="color:white"></span> The Achiever</a>
+        </div>
+        <div id="navbar" class="navbar-collapse collapse">
+          <form class="navbar-form navbar-right">
+            <a href="{{url_for('login')}}" class="btn btn-success">Sign in</a>
+          </form>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Main jumbotron for a primary marketing message or call to action -->
+    <div class="jumbotron">
+      <div class="container">
+        <h2>Welcome!</h2>
+        <p>Have you ever wanted to keep track of all the things you have done in your life? Have you ever wanted to know what's your life progress? Have you ever wanted to create a complete bucket-list? Now you have a chance!</p>
+        <p><a class="btn btn-primary btn-lg" href="{{url_for('create_account')}}" style="float:right">Create account</a></p>
+      </div>
+    </div>
+
+    <div class="container">
+      <!-- Example row of columns -->
+      <div class="row">
+        <div class="col-md-4">
+          <h2>Keep track of everything</h2>
+          <p>By using this website you will be able to view all the things you achieved in your life: from computer games you have completed, through places you visited, to skills you acquired. Note: it is impossible to achieve everything! :)</p>
+          
+        </div>
+        <div class="col-md-4">
+          <h2>Create plans for the future</h2>
+          <p>You can pick anything you wish to achieve and put it in your personal bucket list. Make plans, create schedules and achieve things step by step on your way to greatness!</p>
+          
+       </div>
+        <div class="col-md-4">
+          <h2>Let us help you achieve</h2>
+          <p>It is easy to say "now go and achieve", we know that. That's why we offer you some help! All achievements on your bucket list are supplemented with helpful information about ways to achieve.</p>
+          
+        </div>
+      </div>
+
+      <hr>
+      <h2 align='left' style='display:inline-block;'>Do you own a business and want to help others achieve?</h2>
+      <a href="{{url_for('index_comp')}}" style='float:right;style='display:inline-block;''><button class='btn btn-primary btn-lg'>Click here!</button></a>
+
+    </div>
+      <footer class="footer" style='background-color:rgb(34,34,34);border-top:1px solid rgb(8,8,8)'>
+        <div class="container" style='padding-top:8px'>
+          <p class="text-muted">The Achiever company ltd.</p>
+        </div>
+      </footer>
+
+
+
+    
+
+</body>
+</html>

@@ -1,0 +1,257 @@
+{%extends "base.html"%}
+{%block content%}
+
+
+
+<script type='text/javascript' src="{{url_for('static',filename='tablesorter/jquery.tablesorter.js')}}"></script> 
+
+<h3 align="center"> My companies</h3>
+<br>
+
+        <ul class="nav nav-tabs nav-justified" style="margin-left:20px;">
+          <li class="active"><a data-toggle="pill" href="#miniatures"><b>Miniatures</b></a></li>
+          <li><a data-toggle="pill" href="#table"><b>Detailed Table</b></a></li>
+        </ul>
+        <br>
+        <br>
+        <div class='tab-content'>
+
+            <div id="miniatures" class="tab-pane fade in active">
+
+            {%for company in g.user.companies%}
+
+                <br>
+                <div class="row" id="row{{company.id}}">
+
+                    <div class='col-md-1'>
+                    </div>
+                    <div class='col-md-8'>
+                        {%include 'company_entry.html'%}
+                    </div>
+                    
+                </div>
+                <br>
+
+            {%endfor%}
+
+
+          
+            </div>
+
+
+            <div id="table" class="tab-pane fade">
+
+                <table id="list_promos" class="tablesorter" border="0" cellpadding="0" cellspacing="1" style='margin-left:auto;margin-right:auto'>
+                    <thead>
+                        <th class="header" style='min-width:75px'>Name</th>
+                        <th class="header">E-mail</th>
+                        <th class="header" style='min-width:75px'>Rating</th>
+                        <th class="header" style='min-width:85px'>Number of reviews</th>
+                        <th class="header" style='min-width:80px'>Info-Page Hits</th>
+                        <th class="header" style='min-width:90px'>Date Added</th>                
+                        <th class="header" style='min-width:140px'>Achievements Linked</th>
+
+                        <th class="header" style='min-width:85px'>Sponsored</th>
+                        
+                        <th class="header" style='min-width:75px'>Links Left</th>
+
+                        <th class="header" colspan='2' style="text-align:center">Changes</th>
+                    </thead>
+                    <tbody>
+                        {%set k=1%}
+                        {%for company in g.user.companies%}
+                        {%set a=1%}
+                        {%if k%2==0%}
+                            {%if company.of_interest_count()>0%}
+
+                            {%for ach in company.of_interest()%}
+                 
+
+                                <tr class="even co{{k}}">
+                                    {%if a==1%}
+                               
+                                    <td valign='center' style='text-align:center;' rowspan='{{company.of_interest_count()}}'>{{company.name}} </a></td>
+
+                                    <td valign='center' style='text-align:center;' rowspan='{{company.of_interest_count()}}'>{{company.email}}</a></td>
+
+                                    <td valign='center' style='text-align:center;' rowspan='{{company.of_interest_count()}}'><b>{{company.rating}}</b></td>
+
+                                    <td valign='center' style='text-align:center;' rowspan='{{company.of_interest_count()}}'><b>{{company.reviews.count()}}</b></td>
+
+                                    <td valign='center' style='text-align:center;' rowspan='{{company.of_interest_count()}}'><b>{{company.hits}}</b></td>
+
+                                    <td valign='center' style='text-align:center;' rowspan='{{company.of_interest_count()}}'>{{company.added.strftime('%B %d, %Y')}}</td>
+
+
+                                    <td valign='center' style='text-align:center;'><a href="{{url_for('ach_info',id=ach.id)}}">{{ach.group.name}}{%if ach.level%}, lv. {{ach.level}}{%endif%}</a></td>
+
+                                    <td valign='center' style='text-align:center;'>{%if ach.is_sponsored(company)%}Yes{%else%}No{%endif%}</td>
+
+                                    <td valign='center' style='text-align:center;' rowspan='{{company.of_interest_count()}}'><b>{{company.links_avi}}</b></td>
+
+                                    <td valign='center' rowspan='{{company.of_interest_count()}}' style='text-align:center;'><a href="{{url_for('append_achs_comp',id=company.id)}}"><button class='btn btn-primary'>Edit Links</button></a></td>
+
+                                    <td valign='center' rowspan='{{company.of_interest_count()}}' style='text-align:center;'><button class='btn btn-warning' onclick="del_comp({{company.id}},{{k}})">Delete</button></td>
+
+                                    {%else%}
+
+                                    <td valign='center' style='text-align:center;'><a href="{{url_for('ach_info',id=ach.id)}}">{{ach.group.name}}{%if ach.level%}, lv. {{ach.level}}{%endif%}</a></td>
+
+                                    <td valign='center' style='text-align:center;'>{%if ach.is_sponsored(company)%}Yes{%else%}No{%endif%}</td>
+
+
+                                    {%endif%}
+                                </tr>
+                                {%set a=2%}
+                            
+                            {%endfor%}
+
+                            {%else%}
+
+                             <tr class="even co{{k}}">
+                                    
+                               
+                                    <td valign='center' style='text-align:center;' rowspan='{{company.of_interest_count()}}'>{{company.name}} </a></td>
+
+                                    <td valign='center' style='text-align:center;' rowspan='{{company.of_interest_count()}}'>{{company.email}}</a></td>
+
+                                    <td valign='center' style='text-align:center;' rowspan='{{company.of_interest_count()}}'><b>{{company.rating}}</b></td>
+
+                                    <td valign='center' style='text-align:center;' rowspan='{{company.of_interest_count()}}'><b>{{company.reviews.count()}}</b></td>
+
+                                    <td valign='center' style='text-align:center;' rowspan='{{company.of_interest_count()}}'><b>{{company.hits}}</b></td>
+
+                                    <td valign='center' style='text-align:center;' rowspan='{{company.of_interest_count()}}'>{{company.added.strftime('%B %d, %Y')}}</td>
+
+                                    <td valign='center' style='text-align:center;'><a href="{{url_for('ach_info',id=ach.id)}}">None</a></td>
+
+                                    <td valign='center' style='text-align:center;'>N/A</td>
+
+                                    <td valign='center' style='text-align:center;' rowspan='{{company.of_interest_count()}}'><b>{{company.links_avi}}</b></td>
+
+
+                                    <td valign='center' rowspan='{{company.of_interest_count()}}' style='text-align:center;'><a href="{{url_for('append_achs_comp',id=company.id)}}"><button class='btn btn-primary'>Edit Links</button></a></td>
+
+                                    <td valign='center' rowspan='{{company.of_interest_count()}}' style='text-align:center;'><button class='btn btn-warning' onclick="del_comp({{company.id}},{{k}})">Delete</button></td>
+
+                            </tr>
+
+                            {%endif%}
+
+                        {%else%}
+                            {%if company.of_interest_count()>0%}
+
+                            {%for ach in company.of_interest()%}
+                       
+                                <tr class="odd co{{k}}">
+                                    {%if a==1%}
+                               
+                                    <td valign='center' style='text-align:center;' rowspan='{{company.of_interest_count()}}'>{{company.name}} </a></td>
+
+                                    <td valign='center' style='text-align:center;' rowspan='{{company.of_interest_count()}}'>{{company.email}}</a></td>
+
+                                    <td valign='center' style='text-align:center;' rowspan='{{company.of_interest_count()}}'><b>{{company.rating}}</b></td>
+
+                                    <td valign='center' style='text-align:center;' rowspan='{{company.of_interest_count()}}'><b>{{company.reviews.count()}}</b></td>
+
+                                    <td valign='center' style='text-align:center;' rowspan='{{company.of_interest_count()}}'><b>{{company.hits}}</b></td>
+
+                                    <td valign='center' style='text-align:center;' rowspan='{{company.of_interest_count()}}'>{{company.added.strftime('%B %d, %Y')}}</td>
+
+
+                                    <td valign='center' style='text-align:center;'><a href="{{url_for('ach_info',id=ach.id)}}">{{ach.group.name}}{%if ach.level%}, lv. {{ach.level}}{%endif%}</a></td>
+
+                                    <td valign='center' style='text-align:center;'>{%if ach.is_sponsored(company)%}Yes{%else%}No{%endif%}</td>
+
+                                    <td valign='center' style='text-align:center;' rowspan='{{company.of_interest_count()}}'><b>{{company.links_avi}}</b></td>
+
+
+                                    <td valign='center' rowspan='{{company.of_interest_count()}}' style='text-align:center;'><a href="{{url_for('append_achs_comp',id=company.id)}}"><button class='btn btn-primary'>Edit Links</button></a></td>
+
+                                    <td valign='center' rowspan='{{company.of_interest_count()}}' style='text-align:center;'><button class='btn btn-warning' onclick="del_comp({{company.id}},{{k}})">Delete</button></td>
+
+                                    {%else%}
+
+                                    <td valign='center' style='text-align:center;'><a href="{{url_for('ach_info',id=ach.id)}}">{{ach.group.name}}{%if ach.level%}, lv. {{ach.level}}{%endif%}</a></td>
+
+                                    <td valign='center' style='text-align:center;'>{%if ach.is_sponsored(company)%}Yes{%else%}No{%endif%}</td>
+
+
+                                    {%endif%}
+                                </tr>
+                                {%set a=2%}
+                            
+                            
+                            {%endfor%}
+
+                            {%else%}
+
+                             <tr class="odd co{{k}}">
+                                    
+                               
+                                    <td valign='center' style='text-align:center;' rowspan='{{company.of_interest_count()}}'>{{company.name}} </a></td>
+
+                                    <td valign='center' style='text-align:center;' rowspan='{{company.of_interest_count()}}'>{{company.email}}</a></td>
+
+                                    <td valign='center' style='text-align:center;' rowspan='{{company.of_interest_count()}}'><b>{{company.rating}}</b></td>
+
+                                    <td valign='center' style='text-align:center;' rowspan='{{company.of_interest_count()}}'><b>{{company.reviews.count()}}</b></td>
+
+                                    <td valign='center' style='text-align:center;' rowspan='{{company.of_interest_count()}}'><b>{{company.hits}}</b></td>
+
+                                    <td valign='center' style='text-align:center;' rowspan='{{company.of_interest_count()}}'>{{company.added.strftime('%B %d, %Y')}}</td>
+
+                                    <td valign='center' style='text-align:center;'><a href="{{url_for('ach_info',id=ach.id)}}">None</a></td>
+
+                                    <td valign='center' style='text-align:center;'>N/A</td>
+
+                                    <td valign='center' style='text-align:center;' rowspan='{{company.of_interest_count()}}'><b>{{company.links_avi}}</b></td>
+
+
+                                    <td valign='center' rowspan='{{company.of_interest_count()}}' style='text-align:center;'><a href="{{url_for('append_achs_comp',id=company.id)}}"><button class='btn btn-primary'>Edit Links</button></a></td>
+
+                                    <td valign='center' rowspan='{{company.of_interest_count()}}' style='text-align:center;'><button class='btn btn-warning' onclick="del_comp({{company.id}},{{k}})">Delete</button></td>
+
+                            </tr>
+
+                            {%endif%}
+                        {%endif%}
+                        {%set k=k+1%}
+                        {%endfor%}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+<script type='text/javascript'> 
+
+function del_comp(company_id,k){
+    var idk='.co'+k
+    var idk2='#row'+company_id
+
+    $.post("{{url_for('del_comp')}}",
+    {
+        company_id:company_id
+    }).done(function(data){
+
+        $(idk).each(function(){
+                $(this).remove();
+            });
+
+        $(idk2).remove()
+    });
+};
+
+
+
+
+</script>
+
+
+
+{%endblock%}
+
+
+
+
+

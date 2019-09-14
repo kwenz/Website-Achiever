@@ -1,0 +1,21 @@
+<div class='well' style="background-color:#a5cba0;color:black">
+	<table style='width:100%'>
+		<tr>
+			<td style='width:40px'><b>{{ach.group.subcategory.category.name}}:</b></td>
+			<td style='width:5px'></td>
+			<td aling:'left'><b>{{ach.group.subcategory.name}}</b></td>
+			<td align="right"><i>{{ach.points}}p</i></td>
+		</tr>
+		<tr style="height:10px"></tr>
+		<tr>
+			<td colspan='3' aling='left'>
+			{%if ach.altname%}
+			{{ach.altname}}
+			{%else%}
+			{{ach.group.name}}{%if ach.level!=None%} lv.{{ach.level}}{%endif%}
+			{%endif%}
+			</td>
+			<td align='right'><a href="{{url_for('ach_info',id=ach.id)}}"><span class="glyphicon glyphicon-info-sign" aria-hidden="true" style="color:#303a3a"></span></a></td>
+		</tr>
+	</table>
+</div>

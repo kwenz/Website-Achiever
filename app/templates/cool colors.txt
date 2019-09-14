@@ -1,0 +1,14 @@
+dark grey: #303a3a
+silvery white:#e2e7e7
+pale blue:#6ae4f2
+
+warm orange:#fe4405
+blueish:#0b8fdf
+
+deep teal:#008080
+
+indigo:#4b0082
+
+pale yellow:#feffbf
+
+greygreen:#a5cba0

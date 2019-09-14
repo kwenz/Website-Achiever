@@ -1,0 +1,36 @@
+<div class='well' style="width:684px;height:180px">
+    <div class='row'>
+        <div class='col-sm-2'>
+            <div class="thumbnail" style="height:100px;width:80px">
+                {%if review.user.imgurl%}<img src="{{url_for('static',filename=review.user.imgurl)}}" style="width:95%;height:95%;padding-top:5px;padding-bottom:0px;">{%else%}<img src="{{url_for('static',filename='images/rest/anonymous.png')}}" style="width:100%;height:100%;">{%endif%}
+            </div>
+        </div>
+        <div class='col-md-9'>
+            <table style="width:112%">
+                <tr>
+                    <td valign="top" style="font-size:14px"><a href="{{url_for('user',username=review.user.username)}}"><b>{{review.user.nickname}}</b></a></td>
+                    <td style="width:10px"></td>
+                    <td style="width:220px"><p style="font-size:14px;color:#d3d3d3">{{review.timestamp.strftime('%B %d, %Y at %H:%M')}}</p></td>
+                    <td style="width:10px"></td>
+                    <td style="width:220px" valign="top" align="right">
+                        {%for i in range(review.rating|int)%}
+                        <span class="glyphicon glyphicon-star" aria-hidden="true" style="color:blue"></span>
+                        {%endfor%}
+                        {%for i in range(10-review.rating|int)%}
+                        <span class="glyphicon glyphicon-star-empty" aria-hidden="true" style="color:blue"></span>
+                        {%endfor%}
+                    </td>
+                    {%if review.user.username==g.user.username%}
+                    <td style="width:40px"></td>
+                    <td align="right" valign="top">
+                        <a href="{{url_for('delete_rev',rev_id=review.id)}}"><span class="glyphicon glyphicon-remove" aria-hidden="true" style="color:#d3d3d3"></span></a>
+                    </td>
+                    {%endif%}
+                </tr>
+            </table>
+            <div class="container" style="width:110%;height:85px;overflow-y:hidden;text-overflow:ellipsis;font-size:12px">
+                <p style="white-space:pre-wrap">{{review.body}}</p>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,26 @@
+{%extends 'base.html'%}
+
+{%block content%}
+
+<div class='well'>
+    <form action="" method="post" name="edit_category" enctype="multipart/form-data">
+        {{form.hidden_tag()}}
+        <table align="center">
+            <tr>
+                <td class="form-table">Category name: </td>
+                <td class="form-table">{{form.category(size=30)}}</td>
+                <td>
+                    {%for error in form.category.errors%}
+                    <span style="color:red;">[{{error}}]</span><br>
+                    {%endfor%}
+                </td>
+            </tr>
+            <tr style="height:30px"></tr>
+            <tr>
+                <td colspan="2" align='center'><input class="btn btn-success" type="submit" value="Save"></td>
+            </tr>
+        </table>
+    </form>
+</div>
+
+{%endblock%}

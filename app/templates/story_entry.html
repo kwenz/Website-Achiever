@@ -1,0 +1,15 @@
+<div style='display:inline-block'>
+    <a href="{{url_for('story',story_id=story.id)}}"><h1>{{story.title}}</h1></a>
+    <p class="text-muted">Posted by <a href="{{url_for('user',username=story.user.username)}}">{{story.user.nickname}}.</a> Last edited on {{story.last_edited.strftime('%B %d, %Y at %H:%M')}}</p>
+</div>
+{%if story.user_id==g.user.id%}
+<div style='display:inline-block;float:right'>
+    <a href="{{url_for('edit_story',story_id=story.id)}}"><button class="btn btn-primary" style='margin-top:50px;margin-right:30px'>Edit</button></a>
+    <a href="{{url_for('delete_story',story_id=story.id)}}"><button class="btn btn-warning" style='margin-top:50px;margin-right:10px'>Delete</button></a>
+</div>
+{%endif%}
+<div class='well'>
+    {%filter markdown%}
+    {{story.body}}
+    {%endfilter%}
+</div>

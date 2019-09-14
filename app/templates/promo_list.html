@@ -1,0 +1,84 @@
+{%extends 'base.html'%}
+
+{%block content%}
+
+
+
+<h3 align='center'>Promotions</h3>
+<br>
+
+<table id="list_promos" class="tablesorter" border="0" cellpadding="0" cellspacing="1" style='margin-left:auto;margin-right:auto'>
+                    <thead>
+                        <th class="header" style='text-align:center;'>Company</th>
+                        <th class="header" style='text-align:center;'>Link</th>
+                        <th class="header" style='text-align:center;'>Achievements Linked</th>
+                        <th class="header" style='text-align:center;'>Links Left</th>
+                    </thead>
+                    <tbody>
+                        {%set k=1%}
+                        {%for promo in promos%}
+                        {%set a=1%}
+                        {%if k%2==0%}
+                            
+                            {%for ach in promo.promoted_achievements()%}
+                 
+
+                                <tr class="even">
+                                    {%if a==1%}
+                               
+                                    <td valign='center' style='text-align:center;' rowspan='{{promo.promoted_count()}}'><a href="{{url_for('comp_info',id=promo.company.id)}}">{{promo.company.name}}</a></td>
+
+                                    <td valign='center' style='text-align:center;' rowspan='{{promo.promoted_count()}}'><a href='{{promo.url}}'>{{promo.url}}</a></td>
+
+                                    <td valign='center' style='text-align:center;'><a href="{{url_for('ach_info',id=ach.id)}}">{{ach.group.name}}{%if ach.level%}, lv. {{ach.level}}{%endif%}</a></td>
+
+                                    <td valign='center' style='text-align:center;' rowspan='{{promo.promoted_count()}}'>{{promo.links_avi}}</td>
+
+                                    {%else%}
+
+                                    <td valign='center' style='text-align:center;'><a href="{{url_for('ach_info',id=ach.id)}}">{{ach.group.name}}{%if ach.level%}, lv. {{ach.level}}{%endif%}</a></td>
+
+                                    {%endif%}
+
+                                    
+
+                                </tr>
+                                {%set a=2%}
+                            
+                            {%endfor%}
+                        {%else%}
+                            
+                            {%for ach in promo.promoted_achievements()%}
+                       
+                                <tr class="odd">
+                                    {%if a==1%}
+                                
+                                    <td valign='center' style='text-align:center;' rowspan='{{promo.promoted_count()}}'><a href="{{url_for('comp_info',id=promo.company.id)}}">{{promo.company.name}}</a></td>
+
+                                    <td valign='center' style='text-align:center;' rowspan='{{promo.promoted_count()}}'><a href='{{promo.url}}'>{{promo.url}}</a></td>
+
+                                    <td valign='center' style='text-align:center;'><a href="{{url_for('ach_info',id=ach.id)}}">{{ach.group.name}}{%if ach.level%}, lv. {{ach.level}}{%endif%}</a></td>
+
+                                    <td valign='center' style='text-align:center;' rowspan='{{promo.promoted_count()}}'>{{promo.links_avi}}</td>
+
+                                    {%else%}
+
+                                    <td valign='center' style='text-align:center;'><a href="{{url_for('ach_info',id=ach.id)}}">{{ach.group.name}}{%if ach.level%}, lv. {{ach.level}}{%endif%}</a></td>
+
+                                    {%endif%}
+
+                                    
+
+                                </tr>
+                                {%set a=2%}
+                            
+                            
+                            {%endfor%}
+                        {%endif%}
+                        {%set k=k+1%}
+                        {%endfor%}
+                    </tbody>
+                </table>
+<!-- <script type='text/javascript' src="{{url_for('static',filename='tablesorter/jquery.tablesorter.js')}}"></script> -->
+
+{%endblock%}

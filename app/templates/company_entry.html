@@ -1,0 +1,50 @@
+
+<div class='well' style='width:130%'>
+    <div class='row'>
+        <div class='col-md-2'>
+            <div class='thumbnail' style="height:120px;width:96px">
+                <img src="{{url_for('static',filename=company.imgurl)}}" alt="{{company.name}} image" style="width:95%;height:95%;padding-top:5px;padding-bottom:0px;"/>
+            </div>
+        </div>
+        <div class='col-md-6'>
+            <table>
+                <tr><td><b>{{company.name}}</b></td>
+                    <td style="width:20px"></td>
+                    <td>
+                        {%if company.rating%}
+                        {%for i in range(company.rating|int)%}
+                            <span class="glyphicon glyphicon-star" aria-hidden="true" style="color:gold"></span>
+                        {%endfor%}
+                        {%for i in range(10-company.rating|int)%}
+                            <span class="glyphicon glyphicon-star-empty" aria-hidden="true" style="color:gold"></span>
+                        {%endfor%}
+                        <b> {{'%0.1f'|format(company.rating)}}/10</b>
+                        {%endif%}
+                    </td>
+                </tr>
+                <tr style="height:10px;"></tr>
+                <tr><td>{{company.address}}</td>
+                    <td style="width:20px"></td>
+                    <td>{{company.tel}}</td>
+                </tr>
+                <tr style="height:10px;"></tr>
+                <tr><td>{{company.city}}</td>
+                    <td style="width:20px"></td>
+                    <td>{{company.email}}</td>
+                </tr>
+                <tr style="height:10px;"></tr>
+                <tr><td>Official Website: </td>
+                    <td style="width:20px"></td>
+                    <td><a href="{{company.url}}">{{company.url}}</a></td>
+                </tr>
+                <tr style="height:10px;"></tr>
+                <tr>
+                    <td> <a href="{{url_for('comp_info',id=company.id)}}">More information</a></td>
+                </tr>
+            </table>
+        </div>
+        <div class='col-md-4'>
+            <p>{{company.short_desc}}</p>
+        </div>
+    </div>
+</div>

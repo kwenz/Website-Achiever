@@ -1,0 +1,16 @@
+<div class='well' style='width:400px;margin-top:17px'>
+    <div class='row'>
+        <div class="col-md-10">
+            <h4>{{story.title}}</h4>
+            <p class="text-muted">Posted by <a href="{{url_for('user',username=story.user.username)}}">{{story.user.nickname}}</a> on {{story.last_edited.strftime('%B %d, %Y')}}</p>
+        </div>
+        <div class='col-md-2'>
+            <a href="{{url_for('story',story_id=story.id)}}">Read</a>
+            {%if story.user.username==g.user.username%}
+            <br>
+            <br>
+            <a href="{{url_for('edit_story',story_id=story.id)}}">Edit</a>
+            {%endif%}
+        </div>
+    </div>
+</div>

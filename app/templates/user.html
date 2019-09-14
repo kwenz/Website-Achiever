@@ -1,0 +1,167 @@
+{%extends "base.html"%}
+{%block content%}
+
+<div class="jumbotron" style='background-color:#008080;color:white'>
+	<div class="container">
+		<div class="row">
+			<div class="col-md-3">
+				<div class="thumbnail" style="max-height:250px;max-width:150px;width:auto;height:auto">
+					{%if user.imgurl%}
+                        <img src="{{url_for('static',filename=user.imgurl)}}" alt="{{user.nickname}} profile picture" height="200" width="150"/>
+                    {%else%}
+		        		<img src="{{url_for('static',filename='images/rest/anonymous.png')}}" height="200" width="150"/>
+		        	{%endif%}
+                </div>
+				
+			</div>
+			<div class="col-md-6">
+				<h2>{{user.nickname}}{%if user.title!='None'%}, {{user.title}} {%endif%} </h2>
+                {%if user.last_seen%}<p style='font-size:14px'><i>Last seen on {{user.last_seen.strftime('%B %d, %Y at %H:%M')}}</i></p>{%endif%}
+                {%if user.about_me%}
+				<h4>About me:</h4>
+				<p style='font-size:14px'>{{user.about_me}}</p>{%endif%}
+				<br>
+				<br>
+
+			</div>
+			<div class="col-md-3">
+				<table style='width:100%'>
+					<tr><td align='left'><b>Number achieved: </b></td><td style="width:10px"></td><td align="right"><b>{{user.achieved.count()}}</b></td></tr>
+
+					<tr><td><b>Total score: </b></td><td style="width:10px"></td><td align="right"><b>{{user.total}}</b></td></tr>
+
+					<tr><td><b>Absolute Progress: </b></td><td style="width:10px"></td><td align="right"><b>{{progr}} %</b></td></tr>
+
+					<tr><td><b>Relative Progress: </b></td><td style="width:10px"></td><td align="right"><b>{{progr_des}} %</b></td></tr>
+
+					<tr style='height:20px'></tr>
+
+					<tr><td><a href="{{url_for('followers',username=user.username)}}" style='color:#4b0082'><b>Followers: </b></a></td><td style="width:10px"></td><td align="right" id="fol_count"><b>{{user.followers.count()}}</b></td></tr>
+
+					{%if user==g.user%}
+					<tr><td><a href="{{url_for('followed')}}" style='color:#4b0082'><b>Followed: </b></a></td><td style="width:10px"></td><td align="right" id="fol_count"><b>{{g.user.followed.count()}}</b></td></tr>
+					{%endif%}
+
+					{%if user.id!=g.user.id and g.user.role=='user'%}
+					{%if g.user.already_following(user)%}
+					<tr style='height:30px'></tr>
+					<tr><td colspan='2'></td><td align='right'><button class='btn btn-warning' onclick="stop_following({{user.id}})" id="foll">Unfollow</button></td></tr>
+					{%else%}
+					<tr style='height:30px'></tr>
+					<tr><td colspan='2'></td><td align='right'><button class='btn btn-success' onclick="start_following({{user.id}})" id="foll">Follow</button></td></tr>
+					{%endif%}
+					{%endif%}
+				</table>
+			</div>
+		</div>
+	</div>
+</div>
+
+
+<br>
+<br>
+
+{%if user.todo.count()>0%}
+<div class="container">
+	<h2 align="center">Part of {{user.nickname}}'s bucket-list: </h2>
+	<br>
+	<div class='row'>
+		{%for ach in rand_bucket_lst%}
+		<div class='col-md-4'>
+			{%include 'box_td.html'%}
+		</div>
+		{%endfor%}
+	</div>
+</div>
+{%endif%}
+
+<br>
+<br>
+{%if user.achieved.count()>0%}
+<div class="container">
+	<h2 align="center">Part of {{user.nickname}}'s achievements: </h2>
+	<br>
+	<div class='row'>
+		{%for ach in rand_achieved%}
+		<div class='col-md-4'>
+			{%include 'box_achiev.html'%}			
+		</div>
+		{%endfor%}
+	</div>
+</div>
+{%endif%}
+
+
+
+<br>
+{%if user.stories.count()>0%}
+<div class="container">
+	<h2 align="center">Recent stories: </h2>
+	
+		{%for story in user.stories.order_by(Story.last_edited.desc()).limit(3)%}
+		<br>
+		{%include 'box_story.html'%}
+		{%endfor%}
+	
+	<a href="{{url_for('stories',user_id=user.id)}}"><button class='btn btn-success'>View all</button></a>
+	{%if user==current_user%}
+	<a href="{{url_for('edit_story')}}"><button class="btn btn-info">Add a story</button></a>
+	{%endif%}
+</div>
+{%endif%}
+
+<br>
+{%if user.reviews.count()>0%}
+<div class="container">
+	<h2 align='center'>Recent reviews: </h2>
+
+		{%for review in user.reviews.order_by(Review.timestamp.desc()).limit(3)%}
+		<br>
+		<div style='position:relative;display:block-inline;float:left;width:70%'>
+			{%include 'review.html'%}
+		</div>
+		<div style='position:relative;display:block-inline;float:right'>
+			<br>
+			<br>
+			<br>
+			<a href="{{url_for('comp_info',id=review.company.id)}}" style="font-size:20px"><b>{{review.company.name}}</b></a>
+		</div>
+		{%endfor%}
+
+</div>
+{%endif%}
+
+
+<script type='text/javascript' src="{{url_for('static',filename='comments.js')}}"></script>
+<script type='text/javascript'> 
+
+function start_following(user_id){
+	$.post("{{url_for('follow')}}",
+	{
+		user_id:user_id
+	}).done(function(data){
+		var cnt=$('#fol_count').text();
+		cnt=parseInt(cnt)+1;
+		$('#fol_count').text(cnt);
+		$('#foll').text('Unfollow');
+		$('#foll').removeClass('btn btn-success').addClass('btn btn-warning');
+		$('#foll').attr('onclick','stop_following({{user.id}})');
+	});
+};
+
+function stop_following(user_id){
+	$.post("{{url_for('unfollow')}}",
+	{
+		user_id:user_id
+	}).done(function(data){
+		var cnt=$('#fol_count').text();
+		cnt=parseInt(cnt)-1;
+		$('#fol_count').text(cnt);
+		$('#foll').text('Follow');
+		$('#foll').removeClass('btn btn-warning').addClass('btn btn-success');
+		$('#foll').attr('onclick','start_following({{user.id}})');
+	});
+};
+</script>
+
+{%endblock%}

@@ -1,0 +1,42 @@
+{%extends "base.html"%}
+{%block content%}
+
+<h3 align="center"> Closeby companies</h3>
+{%for company in companies.items%}
+{%if company.in_proximity(g.user.lat,g.user.lon,30)%}
+<br>
+<div class="row">
+
+	<div class='col-md-1'>
+	</div>
+	<div class='col-md-8'>
+		{%include 'company_entry.html'%}
+	</div>
+
+</div>
+<br>
+{%endif%}
+{%endfor%}
+
+
+{%if companies.items|length()>0%}
+
+<nav>
+    <ul class="pager">
+     	<li class="previous">
+        {%if companies.has_prev%}
+            <a href="{{url_for('companies',page=companies.prev_num)}}"><span aria-hidden="true">&larr;</span> Previous</a>
+        {%else%}<a style="color:black"><span aria-hidden="true">&larr;</span> Previous</a>
+        {%endif%}
+    	</li>
+            
+    	<li class="next">
+        {%if companies.has_next%}<a href="{{url_for('companies',page=companies.next_num)}}">Next <span aria-hidden="true">&rarr;</span></a>
+        {%else%}<a style="color:black">Next <span aria-hidden="true">&rarr;</span></a>{%endif%}
+    	</li>
+    </ul>
+</nav>
+
+{%endif%}
+
+{%endblock%}

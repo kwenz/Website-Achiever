@@ -1,0 +1,126 @@
+{%extends "base.html"%}
+{%block content%}
+
+
+<style>
+body{background-image:url(./../static/images/background1.jpg);}
+</style>
+
+ <div class='row'>
+ 	{%set progress_pr=g.user.total*100/g.user.max_score|float%}
+ 	{%set progress_des=g.user.total*100/g.user.max_desired|float%}
+ 	<div class='col-md-3' style="color:white;height:78%;min-height:78%;margin-left:-90px;border-right:1px solid white;position:fixed">
+ 		<div class='row'>
+ 			
+ 			<div class='col-md-5'>
+ 				<h5 align='center'><b>{{g.user.nickname}}</b></h5>
+ 				{%if g.user.imgurl%}
+				<div class="thumbnail" style="max-width:80px;width:auto;height:auto;margin-left:auto;margin-right:auto;">
+                    <img src="{{url_for('static',filename=g.user.imgurl)}}" alt="{{g.user.nickname}} profile picture" height="100" width="70"/>
+                </div>
+                {%else%}
+                <div class="thumbnail" style="max-width:80px;width:auto;height:auto;margin-left:auto;margin-right:auto;">
+                    <img src="{{url_for('static',filename='images/rest/anonymous.png')}}" alt="{{g.user.nickname}} profile picture" height="100" width="70"/>
+                </div>
+				{%endif%}
+ 			</div>
+ 			<div class='col-md-7'>
+ 				<br>
+ 				<br>
+ 				<table style='width:100%'>
+					<tr><td align='left'><b>Number achieved: </b></td><td style="width:10px"></td><td align="right"><b>{{g.user.achieved.count()}}</b></td></tr>
+					<tr><td><b>Total score: </b></td><td style="width:10px"></td><td align="right"><b>{{g.user.total}}</b></td></tr>
+					
+				</table>
+			</div>
+ 		</div>
+ 		<div class='row'>
+ 			<h4 align='center'>Absolute progress: {{'%0.1f'|format(progress_pr)}}%</h4>
+ 			<div class="progress" style="background-color:#e2e7e7;width:80%;margin-left:auto;margin-right:auto">
+				<div class="progress-bar" role="progressbar" aria-valuenow="{{progress_pr}}" aria-valuemin="0" aria-valuemax="100" style="width:{{progress_pr}}%;color:#303a3a">
+				    {{'%0.1f'|format(progress_pr)}}%
+				</div>
+			</div>
+ 		</div>
+ 		<br>
+ 		<div class='row'>
+ 			<h4 align='center'>Relative progress: {{'%0.1f'|format(progress_des)}}%</h4>
+ 			<div class="progress" style="background-color:#e2e7e7;width:80%;margin-left:auto;margin-right:auto">
+				<div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="{{progress_des}}" aria-valuemin="0" aria-valuemax="100" style="width:{{progress_des}}%;color:#303a3a">
+				    {{'%0.1f'|format(progress_des)}}%
+				</div>
+			</div>
+ 		</div>
+
+ 	</div>
+ 	<div class='col-md-6'>
+ 	</div>
+ 	<div class='col-md-3' style="color:white;height:78%;min-height:78%;border-left:1px solid white;margin-left:922px;position:fixed">
+ 	</div>
+ </div>
+ <div class='row'>
+ 	<div class='col-md-3'>
+ 	</div>
+ 	<div class='col-md-6' id="main_feed">
+ 		{%for el in feed%}
+
+
+
+			{%if el in posts%}
+
+				{%set post=el%}
+				
+				{%include 'post_feed.html'%}
+
+
+
+			{%elif el in reviews%}
+
+				{%set review=el%}
+				
+				{%include 'review_feed.html'%}
+
+
+
+			{%else%}
+
+				{%set story=el%}
+				
+				{%include 'story_feed.html'%}
+
+
+
+		{%endif%}
+		{%endfor%}
+ 	</div>
+ 	<div class='col-md-3'>
+ 	</div>
+ </div>
+
+<script type='text/javascript'>
+
+$(document).ready(function(){
+
+	setInterval(function(){
+		$.getJSON("{{url_for('refresh_feed')}}",{}
+			).done(function(data){
+				if(jQuery.isEmptyObject(data)){
+					
+				}
+				else{
+					$.each(data,function(key,value){
+							$('#main_feed').prepend(value[1])
+						});
+					};
+				});	
+	},30000);
+
+});
+
+</script>
+
+
+
+
+<script type='text/javascript' src="{{url_for('static',filename='comments.js')}}"></script>
+{%endblock%}

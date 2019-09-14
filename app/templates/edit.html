@@ -1,0 +1,88 @@
+{%extends "base.html"%}
+
+{%block content%}
+
+
+
+
+
+<h1 style="text-align:center">Edit Your Profile</h1>
+
+<br>
+<div class="well">
+    <div class="container">
+        <div class='row'>
+            <div class="col-md-2">
+            </div>
+            <div class='col-md-5'>
+                <form action="" method="post" name="edit" enctype="multipart/form-data">
+                    {{form.hidden_tag()}}
+                    <table>
+                        <tr><td class='form-table'>Profile picture: </td><td align="right"><input type='file' name='file'></td>
+                        </tr>
+                        <tr style="height:10px">
+                        </tr>
+                        <tr><td class='form-table'>Title: </td><td align="right">{{form.title()}}</td>
+                        </tr>
+                        <tr style="height:10px">
+                        </tr>
+                        <tr><td class='form-table'>Nickname: </td><td align="right">{{form.nickname()}}</td>
+                        </tr>
+                        <tr style="height:10px">
+                        </tr>
+                        <tr>
+                            <td class="form-table">About yourself: </td>
+                            <td align="right">{{form.about_me(cols=32,rows=4)}}</td>
+                        </tr>
+                        <tr style="height:30px">
+                        </tr>
+                        <tr>
+                            <td colspan="2" align='center'><input class="btn btn-success" type="submit" value="Save Changes"></td>
+                        </tr>
+                    </table>
+                </form>
+            </div>
+            <div class="col-md-5">
+                <table>
+                    <tr>
+                        <td>Current url: {{g.user.imgurl}}</td>
+                    </tr>
+                    <tr style="height:60px">
+                    </tr>
+                    <tr><td class='form-table' style="width:auto"><button onclick="get_location()" class="btn btn-warning">Update your location</button></td></tr>
+                    <tr style="height:10px">
+                    </tr>
+                    <tr>
+                        <td colspan='3'><i id="response"></i></td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class='container'>
+    {%for message in get_flashed_messages()%}
+        <p>{{message}}</p>
+    {%endfor%}
+</div>
+
+
+<script type='text/javascript'>
+function get_location() {
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(record_position);
+    }
+    else{$("#response").text("Your browser doesn't provide this service.")};
+}
+
+function record_position(position) {
+        $.post("{{url_for('add_location')}}",{
+            lat:position.coords.latitude,
+            lon:position.coords.longitude
+        }).done(function(data){
+            $("#response").text('Your location has been updated.')
+        });
+}
+</script>
+{%endblock%}

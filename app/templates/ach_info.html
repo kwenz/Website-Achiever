@@ -1,0 +1,249 @@
+{%extends "base.html"%}
+{%block content%}
+
+
+    {%include 'container_achinfo.html'%}
+
+    <br>
+
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="panel panel-primary">
+                    <div class="panel-heading" style='background-color:#303a3a;color:#e2e7e7'>
+                        <h4>Description:</h4>
+                    </div>
+                    <div class="panel-body">
+                        <p>{{achievement.description}}</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="panel panel-primary">
+                    <div class="panel-heading" style='background-color:#303a3a;color:#e2e7e7'>
+                        <h4>Requirements:</h4>
+                    </div>
+                    <div class="panel-body">
+                        <p>{{achievement.requirements}}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    
+
+    {%if achievement.required.count()>0%}
+    <br>
+    <h3 align='center'>Required achievements:</h3>
+    <br>
+    <div class='container'>
+        {%for ach in achievement.required%}
+        {%if loop.index%3==1%}
+        <div class='row'>
+        {%endif%}
+            <div class='col-md-4'>
+                {%include 'box_achiev.html'%}
+            </div>
+        {%if loop.index%3==0 or loop.last%}
+        </div>
+        {%endif%}
+        {%endfor%}
+    </div>
+    {%endif%}
+
+    <br>
+    <hr style="width:100%;color:black;background-color:black;height:1px">
+    <br>
+
+    
+    <div class='container'>
+        <div class='row'>
+            {%if achievement.users_achieved.count()>0%}
+            <div class='col-md-8'>
+                <h3>Users who already achieved:</h3>
+                <table id="list_users_achieved" class="tablesorter" border="0" cellpadding="0" cellspacing="1">
+                    <thead>
+                        <th class="header">Nickname</th>
+                        <th class="header">Date Achieved</th>
+                        <th class="header">Info</th>
+                        <th class="header">User's Total</th>
+                    </thead>
+                    <tbody>
+                        {%set k=1%}
+                        {%for user in achievement.users_achieved.limit(20)%}
+                        {%if k%2==0%}
+                        <tr class="even">
+                        {%else%}
+                        <tr class="odd">
+                        {%endif%}
+                            <td>{{user.nickname}}</td>
+                            <td>Empty for now</td>  
+                            <td style="text-align:center;"><a href="{{url_for('user',username=user.username)}}"><b>{{user.nickname}}'s Page</b></a></td>
+                            <td style="text-align:center;">{{user.total}}</td>
+                        </tr>
+                        {%set k=k+1%}
+                        {%endfor%}
+                    </tbody>
+                </table>
+            </div>
+            <div class='col-md-1'>
+            </div>
+
+            {%if achievement in g.user.achieved%}
+            <div class='col-md-3'>
+                <br>
+                <br>
+                <br>
+                <a href="{{url_for('ach_info_todo',id=achievement.id)}}"><button class='btn btn-warning'>Helpful information</button></a>
+            </div>
+            {%else%}
+            <div class='col-md-3'>
+                <br>
+                <br>
+                <br>
+                <a href="{{url_for('ach_info_todo',id=achievement.id)}}"><button class='btn btn-warning'>Let us help you achieve!</button></a>
+            </div>
+            {%endif%}
+
+
+            {%else%}
+
+            <div class='col-md-9'>
+                <h3>No one has achieved this yet!</h3>
+            </div>
+
+            {%if achievement in g.user.achieved%}
+            <div class='col-md-3'>
+                <br>
+                <a href="{{url_for('ach_info_todo',id=achievement.id)}}"><button class='btn btn-warning'>Helpful information</button></a>
+            </div>
+            {%else%}
+            <div class='col-md-3'>
+                <br>
+                <a href="{{url_for('ach_info_todo',id=achievement.id)}}"><button class='btn btn-warning'>Let us help you achieve!</button></a>
+            </div>
+            {%endif%}
+
+
+            {%endif%}
+        </div>
+    </div>
+
+    <br>
+    <hr style="width:100%;color:black;background-color:black;height:1px">
+    <br>
+
+    {%if achievement.stories.count()>0%}
+    <div class='container'>
+        <div class='row'>
+            <div class='col-md-8'>
+                <h3>Latest stories:</h3>
+                <br>
+                {%for story in achievement.stories.order_by(Story.added.desc()).limit(5)%}
+                    {%include 'box_story.html'%}
+                {%endfor%}
+            </div>
+            <div class='col-md-1'>
+            </div>
+            {%if achievement in g.user.achieved%}
+            <div class='col-md-3'>
+                <br>
+                <br>
+                <br>
+                <br>
+                <a href="{{url_for('edit_story',ach_id=achievement.id)}}"><button class='btn btn-success'>Share your experience with others!</button></a>
+            </div>
+            {%endif%}
+        </div>
+    </div>
+    {%else%}
+    <div class='container'>
+        <div class='row'>
+            <div class='col-md-8'>
+                <h3>No stories yet!</h3>
+            </div>
+            {%if achievement in g.user.achieved%}
+            <div class='col-md-4'>
+                <br>
+                <a href="{{url_for('edit_story',ach_id=achievement.id)}}"><button class='btn btn-success'>Share your experience with others!</button></a>
+            </div>
+            {%endif%}
+        </div>
+    </div>
+    {%endif%}
+    
+    <hr style="width:100%;color:black;background-color:black;height:1px">
+    {%if current_user.role=="user"%}
+    <h3>Comments:</h3>
+    <br>
+
+    <div class="well" style="width:50%">
+        <h4> Leave a comment:</h4>
+        <form action="" method="post" name="post" >
+            {{form.hidden_tag()}}
+            <div class="form-group">
+                <table >
+                    <tr>
+                        <td>
+                        {{form.post(cols=73,rows=4)}}
+                        <td>
+                        <td align="right">
+                            {%for error in form.post.errors%}
+                            <span style="color:red;">[{{error}}]</span><br>
+                            {%endfor%}
+                        </td>
+                    </tr>
+                    <tr style="height:10px">
+                    </tr>
+                    <tr>
+                        <td><button type="submit" class="btn btn-primary">Submit</button></td>
+                        <td></td>
+                    </tr>
+                </table>
+            </div>
+        </form>
+    </div>
+    {%else%}
+    <h3 align='center'>Comments:</h3>
+    {%endif%}
+    <br>
+
+
+    <div class="posts">
+        {%for post in posts.items%}
+            {%include 'post.html'%}
+        {%endfor%}
+    </div>
+
+    {%if posts.items|length()>0%}
+    <nav>
+        <ul class="pager">
+            <li class="previous">
+                {%if posts.has_prev%}
+                <a href="{{url_for('ach_info',id=achievement.id,page=posts.prev_num)}}"><span aria-hidden="true">&larr;</span> Newer</a>
+                {%else%}<a style="color:black"><span aria-hidden="true">&larr;</span> Newer</a>
+                {%endif%}
+            </li>
+            
+            <li class="next">
+                {%if posts.has_next%}<a href="{{url_for('ach_info',id=achievement.id,page=posts.next_num)}}">Older <span aria-hidden="true">&rarr;</span></a>
+                {%else%}<a style="color:black">Older <span aria-hidden="true">&rarr;</span></a>{%endif%}
+            </li>
+        </ul>
+    </nav>
+    {%endif%}
+
+
+
+<script type='text/javascript' src="{{url_for('static',filename='comments.js')}}"></script>
+
+<script type='text/javascript' src="{{url_for('static',filename='tablesorter/jquery.tablesorter.js')}}"></script>
+
+<script type='text/javascript'>
+
+$(document).ready(function() {
+                $("#list_users_achieved").tablesorter({sortList: [[3,1]]}); 
+            });
+</script>
+{%endblock%}

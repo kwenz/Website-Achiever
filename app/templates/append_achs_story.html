@@ -1,0 +1,109 @@
+{%extends 'base.html'%}
+{%block content%}
+
+
+<script type='text/javascript'>
+
+$(document).ready(function() {
+
+                $("#achievement_list").tablesorter( {sortList: [[0,0]]} ); 
+
+            });
+</script>
+
+<h3 align='center'>Choose achievement to describe:</h3>
+<br>
+
+<table id="achievement_list" class="tablesorter" border="0" cellpadding="0" cellspacing="1" style='margin-left:auto;margin-right:auto'>
+                        <thead>
+                            <th class="header">Category</th>
+                            <th class="header">Subcategory</th>
+                            <th class="header">Name</th>
+                            <th class="header">Level</th>
+                            <th class="header">Points</th>
+                            <th class="header">Info</th>
+                            <th class="header">Status</th>
+                        </thead>
+                        <tbody>
+                            {%set k=1%}
+                            {%for achievement in achs%}
+                            {%if k%2==0%}
+                            <tr class="even">
+                            {%else%}
+                            <tr class="odd">
+                            {%endif%}
+                                <td>{{achievement.group.subcategory.category.name}}</td>
+                                <td>{{achievement.group.subcategory.name}}</td>  
+                                <td>{{achievement.group.name}}</td>
+                                <td>{%if achievement.level!=None%}{{achievement.level}}{%else%}N/A{%endif%}</td>
+                                <td>{{achievement.points}}</td>
+                                <td style="text-align:center;"><a href="{{url_for('ach_info',id=achievement.id)}}"><b>Details</b></a></td>
+                                <td style="text-align:center;">
+                                    {%if achievement in story.described%}<button class='btn btn-warning' onclick="stop_desc_ach({{achievement.id}},{{story.id}},{{k}})" id="desc{{k}}">Stop</button>
+                                    {%else%}
+                                    <button class='btn btn-success' onclick="desc_ach({{achievement.id}},{{story.id}},{{k}})" id="desc{{k}}">Describe</button>
+                                    {%endif%}
+                                </td>
+                            </tr>
+                            {%set k=k+1%}
+                            {%endfor%}
+                        </tbody>
+                    </table>
+
+<br>
+
+{%if story.described.count()>0%}
+<h3 align='center'><a href="{{url_for('stories',user_id=g.user.id)}}" id='done-link'><button id="done-btn" class='btn btn-primary' style='width:200px'>Done</button></a></h3>
+{%else%}
+<h3 align='center'><a href="{{url_for('stories',user_id=g.user.id)}}" id='done-link'><button id="done-btn" class='btn btn-primary' style='width:200px' disabled='disabled'>Done</button></a></h3>
+{%endif%}
+
+<script type='text/javascript' src="{{url_for('static',filename='tablesorter/jquery.tablesorter.js')}}"></script>
+
+
+<script type='text/javascript'> 
+
+function desc_ach(ach_id,story_id,k){
+    var idk='#desc'+k;
+
+	$.post("{{url_for('desc_ach')}}",
+	{
+		ach_id:ach_id,
+		story_id:story_id
+	}).done(function(data){
+
+        if(data.unlock){
+            $('#done-btn').attr('disabled',false)
+            // $('#done-link').attr('href',link)
+        };
+
+		$(idk).text('Stop');
+		$(idk).removeClass('btn btn-success').addClass('btn btn-warning');
+		$(idk).attr('onclick','stop_desc_ach('+ach_id+','+story_id+','+k+')');
+	});
+};
+
+function stop_desc_ach(ach_id,story_id,k){
+    var idk='#desc'+k;
+	$.post("{{url_for('stop_desc_ach')}}",
+	{
+		ach_id:ach_id,
+		story_id:story_id
+	}).done(function(data){
+
+        if(data.lock){
+            $('#done-btn').attr('disabled','disabled')
+            // $('#done-link').attr('href','#')
+        };
+
+		$(idk).text('Describe');
+		$(idk).removeClass('btn btn-warning').addClass('btn btn-success');
+
+
+		$(idk).attr('onclick','desc_ach('+ach_id+','+story_id+','+k+')');
+	});
+};
+</script>
+
+
+{%endblock%}

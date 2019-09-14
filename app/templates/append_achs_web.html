@@ -1,0 +1,93 @@
+{%extends 'base.html'%}
+{%block content%}
+
+
+<script type='text/javascript'>
+
+$(document).ready(function() {
+
+                $("#achievement_list").tablesorter( {sortList: [[0,0]]} ); 
+
+            });
+</script>
+
+<h3 align='center'>Achievements</h3>
+<br>
+
+<table id="achievement_list" class="tablesorter" border="0" cellpadding="0" cellspacing="1" style='margin-left:auto;margin-right:auto'>
+                        <thead>
+                            <th class="header">Category</th>
+                            <th class="header">Subcategory</th>
+                            <th class="header">Name</th>
+                            <th class="header">Level</th>
+                            <th class="header">Points</th>
+                            <th class="header">Info</th>
+                            <th class="header">Status</th>
+                        </thead>
+                        <tbody>
+                            {%set k=1%}
+                            {%for achievement in achs%}
+                            {%if k%2==0%}
+                            <tr class="even">
+                            {%else%}
+                            <tr class="odd">
+                            {%endif%}
+                                <td>{{achievement.group.subcategory.category.name}}</td>
+                                <td>{{achievement.group.subcategory.name}}</td>  
+                                <td>{{achievement.group.name}}</td>
+                                <td>{%if achievement.level!=None%}{{achievement.level}}{%else%}N/A{%endif%}</td>
+                                <td>{{achievement.points}}</td>
+                                <td style="text-align:center;"><a href="{{url_for('ach_info',id=achievement.id)}}"><b>Details</b></a></td>
+                                <td style="text-align:center;">
+                                    {%if achievement in web.helped%}<button class='btn btn-warning' onclick="stop_help_ach({{achievement.id}},{{web.id}},{{k}})" id="help{{k}}">Stop</button>
+                                    {%else%}
+                                    <button class='btn btn-success' onclick="help_ach({{achievement.id}},{{web.id}},{{k}})" id="help{{k}}">Help</button>
+                                    {%endif%}
+                                </td>
+                            </tr>
+                            {%set k=k+1%}
+                            {%endfor%}
+                        </tbody>
+                    </table>
+
+<br>
+
+<h3 align='center'><a href="{{url_for('website_list')}}"><button class='btn btn-primary' style='width:200px'>Done</button></a></h3>
+
+<script type='text/javascript' src="{{url_for('static',filename='tablesorter/jquery.tablesorter.js')}}"></script>
+
+
+<script type='text/javascript'> 
+
+function help_ach(ach_id,web_id,k){
+    var idk='#help'+k;
+
+	$.post("{{url_for('help_ach')}}",
+	{
+		ach_id:ach_id,
+		web_id:web_id
+	}).done(function(data){
+
+		$(idk).text('Stop');
+		$(idk).removeClass('btn btn-success').addClass('btn btn-warning');
+		$(idk).attr('onclick','stop_help_ach('+ach_id+','+web_id+','+k+')');
+	});
+};
+
+function stop_help_ach(ach_id,web_id,k){
+    var idk='#help'+k;
+	$.post("{{url_for('stop_help_ach')}}",
+	{
+		ach_id:ach_id,
+		web_id:web_id
+	}).done(function(data){
+
+		$(idk).text('Help');
+		$(idk).removeClass('btn btn-warning').addClass('btn btn-success');
+		$(idk).attr('onclick','help_ach('+ach_id+','+web_id+','+k+')');
+	});
+};
+</script>
+
+
+{%endblock%}

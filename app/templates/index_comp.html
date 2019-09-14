@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <link type="text/css" rel="stylesheet" href="{{url_for('static',filename='stylesheet.css')}}"/>
+    <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+    
+
+    <title>Achievements</title>
+</head>
+<body>
+  <nav class="navbar navbar-inverse navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+          <span class="sr-only">Toggle navigation</span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand"><span class="glyphicon glyphicon-stats" aria-hidden="true" style="color:white"></span> The Achiever</a>
+        </div>
+        <div id="navbar" class="navbar-collapse collapse">
+          <form class="navbar-form navbar-right">
+            <a href="{{url_for('login')}}" class="btn btn-success">Sign in</a>
+          </form>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Main jumbotron for a primary marketing message or call to action -->
+    <div class="jumbotron">
+      <div class="container">
+        <br>
+        <p>Hello business owner! You will have a unique opportunity to help people achieve their dreams, by simply offering them information and promotions. Choose one of three options of supporting our striving-for-excellence users. </p>
+        <a class="btn btn-info" href="#" style="float:right">More information</a>
+      </div>
+    </div>
+
+    <div class="container">
+      <!-- Example row of columns -->
+      <div class="row">
+        <div class="col-md-4">
+          <h2>$5.99</h2>
+          <p>Includes:
+            <ul>
+              <li>1 free "company" linked to your account</li>
+              <li>Up to 10 company-achievement links</li>
+              <li>1 free "sponsored" options</li>
+              <li>3 free "promotions" linked to your "company"</li>
+              <li>3 free promotion-achievement links per promotion</li>
+            </ul>
+          </p>
+          <a class="btn btn-primary" href="{{url_for('create_owner_account',account='b')}}" style="margin-left:auto;margin-right:auto">Basic account</a>
+          
+        </div>
+        <div class="col-md-4">
+          <h2>$19.99</h2>
+          <p>Includes:
+            <ul>
+              <li>3 free "companies" linked to your account</li>
+              <li>Up to 15 company-achievement links</li>
+              <li>1 free "sponsored" options</li>
+              <li>4 free "promotions" linked to your "company"</li>
+              <li>4 free promotion-achievement links per promotion</li>
+            </ul>
+          </p>
+          <a class="btn btn-primary" href="{{url_for('create_owner_account',account='p')}}" style="margin-left:auto;margin-right:auto">Premium account</a>
+          
+       </div>
+        <div class="col-md-4">
+          <h2>$49.99</h2>
+          <p>Includes:
+            <ul>
+              <li>10 free "company" linked to your account</li>
+              <li>Up to 20 company-achievement links</li>
+              <li>2 free "sponsored" options</li>
+              <li>5 free "promotions" linked to your "company"</li>
+              <li>5 free promotion-achievement links per promotion</li>
+            </ul>
+          </p>
+          <a class="btn btn-primary" href="{{url_for('create_owner_account',account='u')}}" style="margin-left:auto;margin-right:auto">Ultimate account</a>
+          
+        </div>
+      </div>
+      <hr>
+
+    </div>
+      <footer class="footer" style='background-color:rgb(34,34,34);border-top:1px solid rgb(8,8,8)'>
+        <div class="container" style='padding-top:8px'>
+          <p class="text-muted">The Achiever company ltd.</p>
+        </div>
+      </footer>
+
+
+
+    
+
+</body>
+</html>

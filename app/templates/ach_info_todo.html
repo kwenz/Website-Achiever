@@ -1,0 +1,158 @@
+{%extends "base.html"%}
+{%block content%}
+
+
+
+
+    {%include 'container_achinfo.html'%}
+
+    <br>
+
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="panel panel-primary">
+                    <div class="panel-heading" style='background-color:#303a3a;color:#e2e7e7'>
+                        <h4>Description:</h4>
+                    </div>
+                    <div class="panel-body">
+                        <p>{{achievement.description}}</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="panel panel-primary">
+                    <div class="panel-heading" style='background-color:#303a3a;color:#e2e7e7'>
+                        <h4>Requirements:</h4>
+                    </div>
+                    <div class="panel-body">
+                        <p>{{achievement.requirements}}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+  {%if achievement.required.count()>0%}
+    <br>
+    <h3 align='center'>Required achievements:</h3>
+    <br>
+    <div class='container'>
+        {%for ach in achievement.required%}
+        {%if loop.index%3==1%}
+        <div class='row'>
+        {%endif%}
+            <div class='col-md-4'>
+                <div class='well' style="background-color:#a5cba0;color:black">
+                    <table style='width:100%'>
+                        <tr>
+                            <td style='width:40px'><b>{{ach.group.subcategory.category.name}}:</b></td>
+                            <td style='width:5px'></td>
+                            <td aling:'left'><b>{{ach.group.subcategory.name}}</b></td>
+                            <td align="right"><i>{{ach.points}}p</i></td>
+                        </tr>
+                        <tr style="height:10px"></tr>
+                        <tr>
+                            <td colspan='3' aling='left'>
+                                {%if ach.altname%}
+                                {{ach.altname}}
+                                {%else%}
+                                {{ach.name}}{%if ach.level!=None%} lv.{{ach.level}}{%endif%}
+                                {%endif%}
+                            </td>
+                            <td align='right'><a href="{{url_for('ach_info',id=ach.id)}}"><span class="glyphicon glyphicon-info-sign" aria-hidden="true" style="color:#303a3a"></span></a></td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        {%if loop.index%3==0%}
+        </div>
+        {%endif%}
+        {%endfor%}
+    </div>
+    {%endif%}
+    <br>
+
+
+    <div style="float:right"><a href="{{url_for('ach_info',id=achievement.id)}}"><button class='btn btn-primary'>Check who already achieved!</button></a>
+    </div>
+    <div class="helpers" style="min-height:200px">
+        <ul class="nav nav-pills">
+            <li><a data-toggle="pill" href="#help">Nearby helpful companies</a></li>
+            <li><a data-toggle="pill" href="#promo">Promotions</a></li>
+            <li><a data-toggle="pill" href="#websites">Useful websites</a></li>
+        </ul>
+
+        <div class="tab-content">
+            <div id="help" class="tab-pane fade">
+                {%for company in companies%}
+                <br>
+                {%include 'company_entry.html'%}
+                <br>
+                {%endfor%}
+                <br>
+            </div>
+            <div id="promo" class="tab-pane fade">
+                <br>
+                {%if achievement.promotions_count()>0%}
+                    <div class="well">
+                    {%for promotion in achievement.promotions_attached()%}
+
+                    {%if current_user.role=="user"%}
+
+                        <div class='thumbnail' style="height:120px;width:500px" onclick="add_click({{promotion.id}},{{achievement.id}})">
+
+                    {%else%}
+
+                        <div class='thumbnail' style="height:120px;width:500px">
+
+                    {%endif%}
+
+                            <a href="{{promotion.url}}"><img src="{{url_for('static',filename=promotion.imgurl)}}" alt="Promotion" style="width:95%;height:95%;padding-top:5px;padding-bottom:0px;" /></a>
+                        </div>
+                    <br>
+                    {%endfor%}
+                    </div>
+                {%endif%}
+            </div>
+            <div id="websites" class="tab-pane fade">
+                <br>
+                {%for website in achievement.websites%}
+                <div class="well" style="height:100px;width:570px">
+                    <div class="row">
+                        <div class="col-md-2">
+                            <div class='thumbnail' style="height:50px;width:50px">
+                                <img src="{{url_for('static',filename=website.imgurl)}}" alt="Promotion" style="width:95%;height:95%;padding-top:5px;padding-bottom:0px;"/>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <p><b>{{website.name}} </b></p>
+                        </div>
+                        <div class="col-md-3">
+                            <a href="{{website.url}}">{{website.url}}</a>
+                        </div>
+                    </div>
+                </div>
+                <br>
+                {%endfor%}
+                
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type='text/javascript'>
+
+function add_click(pr_id,ach_id){
+
+
+    $.post("{{url_for('add_click')}}",
+    {
+        pr_id:pr_id,
+        ach_id:ach_id
+    }).done(function(data){
+    });
+};
+</script>
+
+{%endblock%}

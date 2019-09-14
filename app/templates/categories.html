@@ -1,0 +1,74 @@
+{%extends 'base.html'%}
+
+{%block content%}
+
+<script type='text/javascript'>
+
+$(document).ready(function() {
+
+                $("#categories").tablesorter( {sortList: [[0,0]]} ); 
+
+            });
+</script>
+
+{%if cats|length()>0%}
+<h3 align='center'>Categories</h3>
+<br>
+
+<table id="categories" class="tablesorter" border="0" cellpadding="0" cellspacing="1" style='margin-left:auto;margin-right:auto'>
+    <thead>
+        <th class="header">Name</th>
+        <th class="header">Date added</th>
+        <th class='header'>Added by</th>
+        <th class="header">Changes</th>
+        <th class='header' colspan='2'>Subcategories</th>
+    </thead>
+    <tbody>
+        {%set k=1%}
+        {%for cat in cats%}
+        {%if k%2==0%}
+        <tr class="even" id="ca{{k}}">
+        {%else%}
+        <tr class="odd" id="ca{{k}}">
+        {%endif%}
+            <td style='text-align:center;'>{{cat.name}}</td>
+            <td style='text-align:center;'>{{cat.added.strftime('%B %d, %Y at %H:%M')}}</td>
+            <td style="text-align:center;">{{cat.adder}}</td>
+            <td style='text-align:center;'>
+                <a href="{{url_for('edit_category',cat_id=cat.id)}}"><button class='btn btn-primary'>Edit</button></a>
+                {%if cat.subcategories.count()==0%}
+                <br>
+                <button class='btn btn-warning' onclick="delete_category({{cat.id}},{{k}})">Delete</button>
+                {%endif%}
+            </td>
+            <td style='text-align:center;'>{{cat.subcategories.count()}}</td>
+            <td style='text-align:center;'><a href="{{url_for('subcategories',cat_id=cat.id)}}"><button class='btn btn-success'>View</button></a></td>
+                            
+        </tr>
+        {%set k=k+1%}
+        {%endfor%}
+    </tbody>
+</table>
+{%endif%}
+<br>
+<h3 align='center'><a href="{{url_for('edit_category')}}"><button class="btn btn-success">Add New Category</button></a></h3>
+
+<script type='text/javascript' src="{{url_for('static',filename='tablesorter/jquery.tablesorter.js')}}"></script>
+
+<script type='text/javascript'>
+
+function delete_category(id,k){
+    var idk='#ca'+k;
+    $.post("{{url_for('delete_category')}}",
+        {
+            cat_id:id
+        }).done(function(data){
+            $(idk).remove();
+        });
+
+};
+
+
+</script>
+
+{%endblock%}

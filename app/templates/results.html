@@ -1,0 +1,214 @@
+{%extends "base.html"%}
+{%block content%}
+
+
+{%if type=='C'%}
+
+{%if companies|length>0%}
+
+<h3 align='center'>Search results:</h3>
+<br>
+{%for company in companies%}
+
+
+<div class="row">
+
+	<div class='col-md-1'>
+	</div>
+	<div class='col-md-8'>
+		{%include 'company_entry.html'%}
+	</div>
+		
+</div>
+<br>
+{%endfor%}
+
+{%else%}
+
+<h3 align='center'>Query returned no results.</h3>
+
+{%endif%}
+
+
+{%elif type=='U'%}
+
+{%if users|length>0%}
+
+<div class='container'>
+    <div class='row'>
+    	<div class='col-md-2'>
+    	</div>
+        <div class='col-md-8'>
+            <h3 align='center'>Search results:</h3>
+            <table id="list_users" class="tablesorter" border="0" cellpadding="0" cellspacing="1" style='width:100%'>
+                <thead>
+                    <th class="header" style="text-align:center;">Nickname</th>
+                    <th class="header" style="text-align:center;">Number Achieved</th>
+                    <th class="header" style="text-align:center;">User's Total</th>
+                    <th class="header" style="text-align:center;">Followers</th>
+                    <th class="header" style="text-align:center;">Info</th>
+                </thead>
+                <tbody>
+                    {%set k=1%}
+                    {%for user in users%}
+                    {%if k%2==0%}
+                    <tr class="even">
+                    {%else%}
+                    <tr class="odd">
+                    {%endif%}
+                        <td>{{user.nickname}}</td>
+                        <td style="text-align:center;">{{user.achieved.count()}}</td>
+                        <td style="text-align:center;">{{user.total}}</td>
+                        <td style="text-align:center;">{{user.followers.count()}}</td>
+                        <td style="text-align:center;"><a href="{{url_for('user',username=user.username)}}"><b>{{user.nickname}}'s Page</b></a></td>
+                        
+                    </tr>
+                    {%set k=k+1%}
+                    {%endfor%}
+                 </tbody>
+            </table>
+        </div>
+        <div class='col-md-2'>
+    	</div>
+    </div>
+</div>
+
+<script type='text/javascript' src="{{url_for('static',filename='tablesorter/jquery.tablesorter.js')}}"></script>
+
+<script type='text/javascript'>
+
+$(document).ready(function() {
+                $("#list_users").tablesorter({sortList: [[0,0]]}); 
+            });
+</script>
+
+{%else%}
+
+<h3 align='center'>Query returned no results.</h3>
+
+{%endif%}
+
+
+{%elif type=='A'%}
+
+
+{%if achievements|length>0%}
+<br>
+<div class='container'>
+    <div class='row'>
+        <div class='col-md-2'>
+        </div>
+        <div class='col-md-8'>
+            <h3 align='center'>Search results:</h3>
+            <table id="list_achs" class="tablesorter" border="0" cellpadding="0" cellspacing="1" style='width:100%'>
+                <thead>
+                    <th class="header" style="text-align:center;">Category</th>
+                    <th class="header" style="text-align:center;">Subcategory</th>
+                    <th class="header" style="text-align:center;">Name</th>
+                    <th class="header" style="text-align:center;">Level</th>
+                    <th class="header" style="text-align:center;">Points</th>
+                    <th class="header" style="text-align:center;">Info</th>
+                </thead>
+                <tbody>
+                    {%set k=1%}
+                    {%for achievement in achievements%}
+                    {%if k%2==0%}
+                    <tr class="even">
+                    {%else%}
+                    <tr class="odd">
+                    {%endif%}
+                        <td>{{achievement.group.subcategory.category.name}}</td>
+                        <td>{{achievement.group.subcategory.name}}</td>  
+                        <td>{{achievement.group.name}}</td>
+                        <td>{%if achievement.level!=None%}{{achievement.level}}{%else%}N/A{%endif%}</td>
+                        <td>{{achievement.points}}</td>
+                        <td style="text-align:center;"><a href="{{url_for('ach_info',id=achievement.id)}}"><b>Details</b></a></td>
+                    </tr>
+                    {%set k=k+1%}
+                    {%endfor%}
+                 </tbody>
+            </table>
+        </div>
+        <div class='col-md-2'>
+        </div>
+    </div>
+</div>
+
+<script type='text/javascript' src="{{url_for('static',filename='tablesorter/jquery.tablesorter.js')}}"></script>
+
+<script type='text/javascript'>
+
+$(document).ready(function() {
+                $("#list_achs").tablesorter({sortList: [[0,0], [1,0], [2,0], [3,0]]}); 
+            });
+</script>
+
+{%else%}
+
+<h3 align='center'>Query returned no results.</h3>
+
+{%endif%}
+
+
+
+
+
+{%elif type=='S'%}
+
+
+{%if stories|length>0%}
+
+<h3 align='center'>Search results:</h3>
+<br>
+
+<div class='row'>
+    <div class='col-md-1'>
+    </div>
+    <div class='col-md-5'>
+        <h3 align='center'>Stories:</h3>
+
+    </div>
+    <div class='col-md-6'>
+        <h3 align='center'>Examples of described achievements:</h3>
+    </div>
+</div>
+
+{%for story in stories%}
+<div class='row'>
+    <div class='col-md-1'>
+    </div>
+    <div class='col-md-5'>
+        {%include 'box_story.html'%}
+
+    </div>
+    {%for ach in story.described.limit(2)%}
+    {%if story.described.count()>1%}   
+    <div class='col-md-3'>
+        <br>
+        {%include 'box_achiev.html'%}    
+    </div>
+    {%else%}
+    <div class='col-md-6' style='padding-left:150px;padding-right:150px;'>
+        <br>
+        {%include 'box_achiev.html'%}    
+    </div>
+    {%endif%}
+    {%endfor%}
+
+</div>
+
+<br>
+<hr style='broder:1px solid black'>
+{%endfor%}
+
+{%else%}
+
+<h3 align='center'>Query returned no results.</h3>
+
+{%endif%}
+
+
+{%endif%}
+
+
+{%endblock%}

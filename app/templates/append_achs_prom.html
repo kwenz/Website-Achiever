@@ -1,0 +1,115 @@
+{%extends 'base.html'%}
+{%block content%}
+
+
+<script type='text/javascript'>
+
+$(document).ready(function() {
+
+                $("#achievement_list").tablesorter( {sortList: [[0,0]]} ); 
+
+            });
+</script>
+
+<h3 align='center'>Achievements</h3>
+<br>
+<div class='row'>
+    <div class='col-md-10'>
+        <table id="achievement_list" class="tablesorter" border="0" cellpadding="0" cellspacing="1" style='margin-left:auto;margin-right:auto;width:100%'>
+                        <thead>
+                            <th class="header">Category</th>
+                            <th class="header">Subcategory</th>
+                            <th class="header">Name</th>
+                            <th class="header">Level</th>
+                            <th class="header">Points</th>
+                            <th class="header">Info</th>
+                            <th class="header">Status</th>
+                        </thead>
+                        <tbody>
+                            {%set k=1%}
+                            {%for achievement in achs%}
+                            {%if k%2==0%}
+                            <tr class="even">
+                            {%else%}
+                            <tr class="odd">
+                            {%endif%}
+                                <td>{{achievement.group.subcategory.category.name}}</td>
+                                <td>{{achievement.group.subcategory.name}}</td>  
+                                <td>{{achievement.group.name}}</td>
+                                <td>{%if achievement.level!=None%}{{achievement.level}}{%else%}N/A{%endif%}</td>
+                                <td>{{achievement.points}}</td>
+                                <td style="text-align:center;"><a href="{{url_for('ach_info',id=achievement.id)}}"><b>Details</b></a></td>
+                                <td style="text-align:center;">
+                                    {%if achievement in promotion.promoted_achievements()%}<button class='btn btn-warning' onclick="stop_promote_ach({{achievement.id}},{{promotion.id}},{{k}})" id="help{{k}}">Stop</button>
+                                    {%else%}
+                                    <button class='btn btn-success' onclick="promote_ach({{achievement.id}},{{promotion.id}},{{k}})" id="help{{k}}">Promote</button>
+                                    {%endif%}
+                                </td>
+                            </tr>
+                            {%set k=k+1%}
+                            {%endfor%}
+                        </tbody>
+        </table>
+    </div>
+    <div class='col-md-2'>
+        <br>
+        <h4>Links left: <b id="links_left">{{promotion.links_avi}}</b></h4>
+        <br>
+        <p id='err'>
+        </p>
+    </div>
+</div>
+
+<br>
+
+<h3 align='center'><a href="{{url_for('owned_promotions')}}"><button class='btn btn-primary' style='width:200px'>Done</button></a></h3>
+
+<script type='text/javascript' src="{{url_for('static',filename='tablesorter/jquery.tablesorter.js')}}"></script>
+
+
+<script type='text/javascript'> 
+
+function promote_ach(ach_id,promo_id,k){
+    var idk='#help'+k;
+
+	$.post("{{url_for('promote_ach')}}",
+	{
+		ach_id:ach_id,
+		promo_id:promo_id
+	}).done(function(data){
+
+        if(data.res){
+    		$(idk).text('Stop');
+    		$(idk).removeClass('btn btn-success').addClass('btn btn-warning');
+    		$(idk).attr('onclick','stop_promote_ach('+ach_id+','+promo_id+','+k+')');
+            $('#links_left').text(data.avi)
+
+            $('#err').text("")
+        }
+        else{
+            $('#err').text("You don't have any more links available for this promotion.")
+        };
+	});
+};
+
+function stop_promote_ach(ach_id,promo_id,k){
+    var idk='#help'+k;
+	$.post("{{url_for('stop_promote_ach')}}",
+	{
+		ach_id:ach_id,
+		promo_id:promo_id
+	}).done(function(data){
+
+    		$(idk).text('Promote');
+    		$(idk).removeClass('btn btn-warning').addClass('btn btn-success');
+    		$(idk).attr('onclick','promote_ach('+ach_id+','+promo_id+','+k+')');
+            $('#links_left').text(data.avi)
+
+            $('#err').text("")
+     
+	});
+};
+</script>
+
+
+{%endblock%}

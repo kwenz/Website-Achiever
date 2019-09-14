@@ -1,0 +1,112 @@
+<div class="container">
+        <div class='well' style='background-color:#303a3a;color:#e2e7e7'>
+            <div class="row">
+                <div class='col-md-3'>
+                    <div class="thumbnail" style='width:200px;height:200px'>
+                        <img src="{{url_for('static',filename=achievement.imgurl)}}" alt="{{achievement.name}} image" style="width:100%;height:100%"/>
+                    </div>
+                </div>
+                <div class="col-md-1">
+                </div>
+                <div class="col-md-4">
+                    <table style='font-size:14pt'>
+                        <tr>
+                            <td style='color:white'><i>Category:</i></td>
+                            <td style='width:25px'></td>
+                            <td style='color:white'>{{achievement.group.subcategory.category.name}}</td>
+                        </tr>
+                        <tr style="height:10px">
+                        </tr>
+                        <tr>
+                            <td style='color:white'><i>Subcategory:</i></td>
+                            <td style='width:25px'></td>
+                            <td style='color:white'>{{achievement.group.subcategory.name}}</td>
+                        </tr>
+                        <tr style="height:10px">
+                        </tr>
+                        <tr>
+                            <td style='color:white'><i>Name:</i></td>
+                            <td style='width:25px'></td>
+                            <td style='color:white'>{{achievement.group.name}}</td>
+                        </tr>
+                        {%if achievement.level%}
+                        <tr style="height:10px">
+                        </tr>
+                        <tr>
+                            <td style='color:white'><i>Level:</i></td>
+                            <td style='width:25px'></td>
+                            <td style='color:white'>{{achievement.level}}</td>
+                        </tr>
+                        {%endif%}
+                        {%if achievement.altname%}
+                        <tr style="height:10px">
+                        </tr>
+                        <tr>
+                            <td style='color:white'><i>Alternative name:</i></td>
+                            <td style='width:25px'></td>
+                            <td style='color:white'>{{achievement.altname}}</td>
+                        </tr>
+                        {%endif%}
+                    </table>
+                </div>
+                <div class="col-md-4">
+                    <table style='font-size:14pt'>
+                        <tr>
+                            <td style='color:white'><i>Points:</i></td>
+                            <td style='width:25px'></td>
+                            <td style='color:white'>{{achievement.points}}</td>
+                        </tr>
+                        {%if achievement.title%}
+                        <tr style="height:10px">
+                        </tr>
+                        <tr>
+                            <td style='color:white'><i>Title:</i></td>
+                            <td style='width:25px'></td>
+                            <td style='color:white'>{{achievement.title}}</td>
+                        </tr>
+                        {%endif%}
+                        <tr style="height:10px">
+                        </tr>
+                        <tr>
+                            <td style='color:white'><i>How many achieved:</i></td>
+                            <td style='width:25px'></td>
+                            <td style='color:white'>{{achievement.users_achieved.count()}}</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+            <div class='row'>
+                <div class='col-md-4'>
+                </div>
+                <div class='col-md-8'>
+                        
+
+                        {%if g.user.role=='user'%}
+                            {%if achievement in g.user.achieved%}
+
+                            <h3 align='right'><span class="glyphicon glyphicon-ok" aria-hidden="true" style="color:#a5cba0"></span>  Achieved</h3>
+                            {%endif%}
+                        {%elif g.user.role=='owner'%}
+                            {%if achievement.is_sponsored_user(g.user)%}
+                            
+                            <h3 align='center' style='display:inline-block;position:relative;width:200px'><span class="glyphicon glyphicon-ok" aria-hidden="true" style="color:#a5cba0"></span>Sponsored</h3>
+                            {%endif%}
+                            {%if achievement in g.user.interested_achs()%}
+                            
+                            <h3 align='center' style='display:inline-block;position:relative;width:200px'><span class="glyphicon glyphicon-ok" aria-hidden="true" style="color:#a5cba0"></span>  Of Interest</h3>
+                            {%endif%}
+                            {%if achievement in g.user.promoted_achs()%}
+                            
+                            <h3 align='center' style='display:inline-block;position:relative;width:200px'><span class="glyphicon glyphicon-ok" aria-hidden="true" style="color:#a5cba0"></span>  Promoted</h3>
+                            {%endif%}
+                        {%elif current_user.role=="admin"%}
+                            
+                            <a href="{{url_for('append_achs_req',id=achievement.id)}}" style='display:inline-block;margin-left:420px;position:relative'><button class='btn btn-primary'>Edit Connections</button></a>
+
+                            <a href="{{url_for('edit_achievement',grp_id=achievement.group.id,ach_id=achievement.id)}}" style='display:inline-block;position:relative'><button class='btn btn-primary'>Edit Information</button></a>
+                        {%endif%}
+                   
+                </div>
+            </div>
+        </div>
+    </div>

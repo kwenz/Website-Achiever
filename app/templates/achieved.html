@@ -1,0 +1,138 @@
+{%extends "base.html"%}
+{%block content%}
+
+
+
+<script type='text/javascript'>
+
+$(document).ready(function() {
+                $(".subcategory").hide();
+                $(".name-segment").hide();
+                $(".ach_table").hide();
+
+                $("#list_achieved").tablesorter( {sortList: [[0,0], [1,0], [2,0], [3,0]]} ); 
+
+                $(".cat-header").click(function() {
+                    children=$(this).siblings('div');
+                    $(children).slideToggle();});
+                
+                $(".subcat-header").click(function() {
+                    children=$(this).siblings('div');
+                    $(children).slideToggle();});
+
+            });
+</script>
+
+<script type='text/javascript' src="{{url_for('static',filename='tablesorter/jquery.tablesorter.js')}}"></script> 
+
+{%include 'sidebar.html'%}
+
+<div class='row'>
+    <div class='col-md-3'>
+    </div>
+    <div class='col-md-9'>
+        <ul class="nav nav-tabs nav-justified" style="margin-left:20px;">
+          <li class="active"><a data-toggle="pill" href="#blocks"><b>Blocks</b></a></li>
+          <li><a data-toggle="pill" href="#table"><b>Table</b></a></li>
+        </ul>
+        <br>
+        <br>
+        <div class='tab-content'>
+
+            <div id="blocks" class="tab-pane fade in active">
+
+                <div class="achievements">
+                    {%for cat in categories%}
+                    <div class="category">
+
+                        <div class="cat-header">
+                            <h2 class="cat-name">{{cat.name}}</h2>
+                        </div>
+                        <br>
+                        {%for sub in cat.subcategories.order_by('name') if sub.in_achieved(g.user)%}
+
+                        <div class="subcategory">
+                            
+                            <div class="subcat-header">
+                                <h2 class="subcat-name">{{sub.name}}</h2>
+                            </div>
+                            <br>
+                            
+                            <div class="name-segment">
+                                {%for grp in sub.groups.order_by('name') if grp.in_achieved(g.user)%}
+                                                                                                  
+                                    {%for ach in grp.achievements.order_by('level') if ach in g.user.achieved%}
+
+                                    {%if loop.first%}
+                                    <div class="achiev-segment">
+                                    {%endif%}
+
+                                        {%if loop.index%3==1%}
+                                        <div class='row' style="width:115% !important">
+                                        {%endif%}
+                                            <div class='col-md-4'>
+                                                {%include 'box_achiev.html'%}
+                                            </div>
+                                        {%if loop.index%3==0 or loop.last%}
+                                        </div>
+                                        {%endif%}
+
+                                    {%if loop.last%}
+                                    </div>
+                                    <hr style='border:#303a3a solid 1px'>
+                                    <br>
+                                    {%endif%}
+
+                                    {%endfor%}
+                                
+                                {%endfor%}
+                            </div>
+                        </div>
+                        {%endfor%}
+                    </div>
+                    {%endfor%}
+                </div>
+            </div>
+
+            <div id="table" class="tab-pane fade">
+                <div style="position:relative">
+                    {%if g.user.achieved.count()>0%}
+                    <p style="margin-left:50px">Sort multiple columns simultaneously by holding down the shift key.</p>
+                    <br>
+                    <table id="list_achieved" class="tablesorter" border="0" cellpadding="0" cellspacing="1">
+                        <thead>
+                            <th class="header">Category</th>
+                            <th class="header">Subcategory</th>
+                            <th class="header">Name</th>
+                            <th class="header">Level</th>
+                            <th class="header">Points</th>
+                            <th class="header">Info</th>
+                        </thead>
+                        <tbody>
+                            {%set k=1%}
+                            {%for achievement in g.user.achieved%}
+                            {%if k%2==0%}
+                            <tr class="even">
+                            {%else%}
+                            <tr class="odd">
+                            {%endif%}
+                                <td>{{achievement.group.subcategory.category.name}}</td>
+                                <td>{{achievement.group.subcategory.name}}</td>  
+                                <td>{{achievement.group.name}}</td>
+                                <td>{%if achievement.level!=None%}{{achievement.level}}{%else%}N/A{%endif%}</td>
+                                <td>{{achievement.points}}</td>
+                                <td style="text-align:center;"><a href="{{url_for('ach_info',id=achievement.id)}}"><b>Details</b></a></td>
+                            </tr>
+                            {%set k=k+1%}
+                            {%endfor%}
+                        </tbody>
+                    </table>
+                    {%endif%}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{%endblock%}
+

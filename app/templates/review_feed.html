@@ -1,0 +1,28 @@
+<h4 align='center' style="color:#e2e7e7" >{{review.user.nickname}} reviewed <a href="{{url_for('comp_info',id=review.company.id)}}" style='color:#a5cba0'>{{review.company.name}}</a>:</h4>
+
+<div class='well' style="width:95%;height:180px;margin-left:auto;margin-right:auto">
+	<div class='row'>
+		<div class='col-sm-2'>
+		    <div class="thumbnail" style="height:100px;width:80px">
+		        {%if review.user.imgurl%}
+		        <img src="{{url_for('static',filename=review.user.imgurl)}}" style="width:95%;height:95%;padding-top:5px;padding-bottom:0px;">
+		        {%else%}
+		        <img src="{{url_for('static',filename='images/rest/anonymous.png')}}" style="width:100%;height:100%;">
+		        {%endif%}
+		    </div>
+		</div>
+		<div class='col-md-9'>
+		    <table style="width:112%">
+		        <tr>
+		            <td valign="top" style="font-size:14px"><a href="{{url_for('user',username=review.user.username)}}"><b>{{review.user.nickname}}</b></a></td>
+		            <td style="width:10px"></td>
+		            <td><p style="font-size:14px;color:#d3d3d3">{{review.timestamp.strftime('%B %d, %Y at %H:%M')}}</p></td>
+		        </tr>
+		    </table>
+		    <div class="container" style="width:110%;height:85px;overflow-y:hidden;text-overflow:ellipsis;font-size:12px">
+		        <p style="white-space:pre-wrap">{{review.body}}</p>
+		    </div>
+		</div>
+	</div>
+</div>
+<hr>

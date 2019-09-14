@@ -1,0 +1,50 @@
+{%extends 'base.html'%}
+
+{%block content%}
+
+<script type='text/javascript'>
+
+$(document).ready(function() {
+
+                $("#list_users").tablesorter( {sortList: [[0,0]]} ); 
+
+            });
+</script>
+
+<h3 align='center'>Users</h3>
+<br>
+
+<table id="list_users" class="tablesorter" border="0" cellpadding="0" cellspacing="1" style='margin-left:auto;margin-right:auto'>
+                    <thead>
+                        <th class="header">Username</th>
+                        <th class="header">Nickname</th>
+                        <th class='header'>Last Seen</th>
+                        <th class="header">User's Total</th>
+                        <th class="header">Achieved</th>
+                        <th class="header">Followers</th>
+                        <th class="header">Info</th>
+                        
+                    </thead>
+                    <tbody>
+                        {%set k=1%}
+                        {%for user in users%}
+                        {%if k%2==0%}
+                        <tr class="even">
+                        {%else%}
+                        <tr class="odd">
+                        {%endif%}
+                        	<td>{{user.username}}</td>
+                            <td>{{user.nickname}}</td>
+                            <td>{%if user.last_seen%}{{user.last_seen.strftime('%B %d, %Y at %H:%M')}}{%else%}None{%endif%}</td><td style="text-align:center;">{{user.total}}</td>
+                            <td style="text-align:center;">{{user.achieved.count()}}</td>
+                            <td style="text-align:center;">{{user.followers.count()}}</td>
+                            <td style="text-align:center;"><a href="{{url_for('user',username=user.username)}}"><b>{{user.nickname}}'s Page</b></a></td>
+                            
+                        </tr>
+                        {%set k=k+1%}
+                        {%endfor%}
+                    </tbody>
+                </table>
+                <script type='text/javascript' src="{{url_for('static',filename='tablesorter/jquery.tablesorter.js')}}"></script>
+
+{%endblock%}

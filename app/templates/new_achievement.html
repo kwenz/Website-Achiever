@@ -1,0 +1,112 @@
+{%extends 'base.html'%}
+{%block content%}
+
+<h1 style="text-align:center">Choose a category:</h1>
+
+<br>
+<div class="well">
+    <div class="container">
+        <div class='row'>
+            <div class="col-md-2">
+            </div>
+            <div class='col-md-8'>
+                <form action="" method="post" name="edit" enctype="multipart/form-data">
+                    {{form.hidden_tag()}}
+                    <table>
+                        <tr>
+                            <td class='form-table'>Image: </td>
+                            <td align="right"><input type='file' name='file'></td>
+                        </tr>
+                        <tr style="height:10px">
+                        </tr>
+                        <tr>
+                            <td class='form-table'>Alternative Name: </td>
+                            <td align="right">{{form.altname()}}</td>
+                            <td>
+                                {%for error in form.altname.errors%}
+                                <span style="color:red;">[{{error}}]</span><br>
+                                {%endfor%}
+                            </td>
+                        </tr>
+                        <tr style="height:10px">
+                        </tr>
+                        <tr>
+                            <td class='form-table'>Level: </td>
+                            <td align="right">{{form.level()}}</td>
+                            <td>
+                                {%for error in form.level.errors%}
+                                <span style="color:red;">[{{error}}]</span><br>
+                                {%endfor%}
+                            </td>
+                        </tr>
+                        <tr style="height:10px">
+                        </tr>
+                        <tr>
+                            <td class='form-table'>Points: </td>
+                            <td align="right">{{form.points()}}</td>
+                            <td>
+                                {%for error in form.points.errors%}
+                                <span style="color:red;">[{{error}}]</span><br>
+                                {%endfor%}
+                            </td>
+                        </tr>
+                        <tr style="height:10px">
+                        </tr>
+                        <tr>
+                            <td class='form-table'>Title: </td>
+                            <td align="right">{{form.title()}}</td>
+                            <td>
+                                {%for error in form.title.errors%}
+                                <span style="color:red;">[{{error}}]</span><br>
+                                {%endfor%}
+                            </td>
+                        </tr>
+                        <tr style="height:10px">
+                        </tr>
+                        <tr>
+                            <td class='form-table'>Description: </td>
+                            <td align="right">{{form.description(cols=32,rows=4)}}</td>
+                            <td>
+                                {%for error in form.description.errors%}
+                                <span style="color:red;">[{{error}}]</span><br>
+                                {%endfor%}
+                            </td>
+                        </tr>
+                        <tr style="height:10px">
+                        </tr>
+                        <tr>
+                            <td class='form-table'>Requirements: </td>
+                            <td align="right">{{form.requirements(cols=32,rows=4)}}</td>
+                            <td>
+                                {%for error in form.requirements.errors%}
+                                <span style="color:red;">[{{error}}]</span><br>
+                                {%endfor%}
+                            </td>
+                        </tr>
+                        <tr style="height:30px">
+                        </tr>
+                        <tr>
+                            <td colspan="2"><input class="btn btn-success" type="submit" value="Submit"></td>
+                        </tr>
+                    </table>
+                </form>
+            </div>
+            <div class="col-md-2">
+                
+            </div>
+        </div>
+    </div>
+</div>
+<br>
+<div class='container'>
+    {%for message in get_flashed_messages()%}
+        <p>{{message}}</p>
+    {%endfor%}
+</div>
+
+
+
+
+
+
+{%endblock%}

@@ -1,0 +1,65 @@
+{%extends 'base.html'%}
+{%block content%}
+
+<h1 style="text-align:center">Add new promotion:</h1>
+
+<br>
+<div class="well">
+    <div class="container">
+        <div class='row'>
+            <div class="col-md-2">
+            </div>
+            <div class='col-md-8'>
+                <form action="" method="post" name="edit" enctype="multipart/form-data">
+                    {{form.hidden_tag()}}
+                    <table>
+                        <tr>
+                        	<td class='form-table'>Image: </td>
+                        	<td align="right"><input type='file' name='file'></td>
+                        </tr>
+                        
+                        <tr style="height:10px">
+                        </tr>
+                        <tr>
+                        	<td class='form-table'>URL: </td>
+                        	<td align="right">{{form.url()}}</td>
+                        	<td>
+                        		{%for error in form.url.errors%}
+				                <span style="color:red;">[{{error}}]</span><br>
+				                {%endfor%}
+			            	</td>
+                        </tr>
+                        <tr style="height:10px">
+                        </tr>
+                        <tr>
+                            <td class='form-table'>Company's name: </td>
+                            <td align="right">{{form.company()}}</td>
+                            <td>
+                                {%for error in form.company.errors%}
+                                <span style="color:red;">[{{error}}]</span><br>
+                                {%endfor%}
+                            </td>
+                        </tr>
+                        <tr style="height:30px">
+                        </tr>
+                        <tr>
+                            <td colspan="2" align='center'><input class="btn btn-success" type="submit" value="Next"></td>
+                        </tr>
+                    </table>
+                </form>
+            </div>
+            <div class="col-md-2">
+            	
+            </div>
+        </div>
+    </div>
+</div>
+<br>
+<div class='container'>
+    {%for message in get_flashed_messages()%}
+        <p>{{message}}</p>
+    {%endfor%}
+</div>
+
+
+{%endblock%}

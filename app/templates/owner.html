@@ -1,0 +1,109 @@
+{%extends "base.html"%}
+{%block content%}
+
+<div class="jumbotron" style='background-color:#008080;color:white'>
+	<div class="container">
+		<div class="row">
+			<div class="col-md-3">
+				<div class="thumbnail" style="max-height:250px;max-width:150px;width:auto;height:auto">
+					{%if owner.imgurl%}
+                        <img src="{{url_for('static',filename=owner.imgurl)}}" alt="{{owner.username}} profile picture" height="200" width="150"/>
+                    {%else%}
+		        		<img src="{{url_for('static',filename='images/rest/anonymous.png')}}" height="200" width="150"/>
+		        	{%endif%}
+                </div>
+				
+			</div>
+			<div class="col-md-5">
+				<h2>{%if owner.nickname%}{{owner.nickname}}{%else%}{{owner.username}}{%endif%}</h2>
+                {%if owner.last_seen%}<p style='font-size:14px'><i>Last seen on {{owner.last_seen.strftime('%B %d, %Y at %H:%M')}}</i></p>{%endif%}
+                {%if owner.about_me%}
+				<h4>About me:</h4>
+				<p style='font-size:14px'>{{owner.about_me}}</p>{%endif%}
+				<br>
+				<br>
+
+			</div>
+			<div class="col-md-4">
+				<table style='width:100%'>
+					<tr><td align='left'><b>Companies owned: </b></td><td style="width:10px"></td><td align="right"><b>{{owner.companies.count()}}</b></td></tr>
+
+					<tr><td align='left'><b>Promotions owned: </b></td><td style="width:10px"></td><td align="right"><b>{{owner.promotions_count()}}</b></td></tr>
+
+					<tr><td align='left'><b>Achievements connected: </b></td><td style="width:10px"></td><td align="right"><b>{{achs_count}}</b></td></tr>
+
+					{%if g.user.id==owner.id%}
+					<tr><td align='left'><b>Special companies available: </b></td><td style="width:10px"></td><td align="right"><b>{{owner.special_companies_avi}}</b></td></tr>
+
+					<tr><td align='left'><b>Normal companies available: </b></td><td style="width:10px"></td><td align="right"><b>{{owner.normal_companies_avi}}</b></td></tr>
+
+
+					<tr style='height:50px;'></tr>
+
+					
+					<tr><td align='left'><b> Account type: </b></td><td style="width:10px"></td><td align="right"><b>{{owner.account_type}}</b></td></tr>
+					{%endif%}
+				</table>
+			</div>
+		</div>
+	</div>
+</div>
+
+{%if owner.companies.count()>0%}
+<div class="container">
+	<h2 align="center">{%if owner.nickname%}{{owner.nickname}}'s most{%else%}Most{%endif%} popular companies: </h2>
+	<br>
+
+	{%for company in owner.companies.order_by('hits').limit(3)%}
+	<div class='row'>
+		<div class='col-md-1'>
+		</div>
+		<div class='col-md-8'>
+			{%include 'company_entry.html'%}
+		</div>
+	</div>
+	{%if current_user.id==company.owner.id%}
+	<div class='row'>
+		<div class='col-md-10'>
+		</div>
+		<div class='col-md-1'>
+		    <a href="{{url_for('edit_company',id=company.id)}}"><button class='btn btn-primary'>Edit Information</button></a>
+		</div>
+	</div>
+	<hr>
+	{%endif%}
+
+	{%endfor%}
+
+</div>
+
+{%endif%}
+
+<br>
+<br>
+{%if owner.promotions_count()>0%}
+<div class="container">
+	<h2 align="center">{%if owner.nickname%}{{owner.nickname}}'s most{%else%}Most{%endif%} popular promotions: </h2>
+	<br>
+	
+	{%for promo in sorted_promos%}
+		<div class='row'>
+		<div class='col-md-2'>
+		</div>
+		<div class='col-md-8'>
+
+			<div class='well'>
+				<div class='thumbnail' style="height:120px;width:400px;margin-left:auto;margin-right:auto">
+                 	<a href="{{promo.url}}">
+                        <img src="{{url_for('static',filename=promo.imgurl)}}" alt="Promotional image" style="width:95%;height:95%;padding-top:5px;padding-bottom:0px;"/>
+                    </a>
+                </div>
+			</div>
+		</div>
+		</div>
+	{%endfor%}
+	
+</div>
+{%endif%}
+
+{%endblock%}

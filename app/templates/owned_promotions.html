@@ -1,0 +1,238 @@
+{%extends "base.html"%}
+{%block content%}
+
+<script type='text/javascript' src="{{url_for('static',filename='tablesorter/jquery.tablesorter.js')}}"></script> 
+
+<h3 align="center"> My promotions</h3>
+<br>
+
+        <ul class="nav nav-tabs nav-justified" style="margin-left:20px;">
+          <li class="active"><a data-toggle="pill" href="#banners"><b>Banners and Popularity</b></a></li>
+          <li><a data-toggle="pill" href="#table"><b>Detailed Table</b></a></li>
+        </ul>
+        <br>
+        <br>
+        <div class='tab-content'>
+
+            <div id="banners" class="tab-pane fade in active">
+
+                <table id="banner_promos" class="tablesorter" border="0" cellpadding="0" cellspacing="1" style='margin-left:auto;margin-right:auto'>
+                    <thead>
+                        <th class="header" style='text-align:center;'>Banner</th>
+                        <th class="header" style='text-align:center;width:200px'>Parent Company</th>
+                        <th class="header" style='text-align:center;width:200px'>Clicks From Achievements' Pages</th>
+                        <th class="header" style='text-align:center;width:200px'>Clicks From Company's Page</th>
+                        <th class="header" style='text-align:center;width:200px'>Popularity (total number of clicks)</th>
+                    </thead>
+                    <tbody>
+
+                        {%set k=1%}
+                        {%for promotion in g.user.owned_promotions()%}
+                        {%if k%2==0%}
+                        <tr class="even" id="row{{promotion.id}}">
+                        {%else%}
+                        <tr class="odd" id="row{{promotion.id}}">
+                        {%endif%}
+                            <td>
+                                <div class='thumbnail' style="height:120px;width:400px;margin-left:auto;margin-right:auto">
+                                    <a href="{{promotion.url}}">
+                                        <img src="{{url_for('static',filename=promotion.imgurl)}}" alt="Promotional image" style="width:95%;height:95%;padding-top:5px;padding-bottom:0px;"/>
+                                    </a>
+                                </div>
+                            </td>
+                            <td valign='center' style='text-align:center;'><a href="{{url_for('comp_info',id=promotion.company.id)}}"><h3>{{promotion.company.name}}</h3></a></td>
+                            <td valign='center' style='text-align:center;'><h3>{{promotion.total_clicks()}}</h3></td>
+                            <td valign='center' style='text-align:center;'><h3>{{promotion.company_clicks}}</h3></td>
+                            <td valign='center' style='text-align:center;'><h3>{{promotion.total_clicks()+promotion.company_clicks}}</h3></td>
+                            
+                        </tr>
+                        {%set k=k+1%}
+                        {%endfor%}
+                    </tbody>
+                </table>
+                <br>       
+                 
+            </div>
+
+
+            <div id="table" class="tab-pane fade">
+
+                <table id="list_promos" class="tablesorter" border="0" cellpadding="0" cellspacing="1" style='margin-left:auto;margin-right:auto'>
+                    <thead>
+                        <th class="header" style='text-align:left;min-width:100px'>Parent Company</th>
+                        <th class="header" style='text-align:left;min-width:75px'>URL Link</th>
+                        <th class="header" style='text-align:left;min-width:150px'>Achievements Linked</th>                 
+                        <th class="header" style='text-align:left;width:75px'>Clicks</th>
+                        <th class="header" style='text-align:left;min-width:75px'>Links Left</th>
+                        <th class="header" style='text-align:left;min-width:75px'>Date Added</th>
+                        <th class="header" colspan='2' style='text-align:center;'>Changes</th>
+                    </thead>
+                    <tbody>
+                        {%set k=1%}
+                        {%for promo in g.user.owned_promotions()%}
+                        {%set a=1%}
+                        {%if k%2==0%}
+                            {%if promo.promoted_count()>0%}
+
+                            {%for ach in promo.promoted_achievements()%}
+                 
+
+                                <tr class="even pr{{k}}">
+                                    {%if a==1%}
+                               
+                                    <td valign='center' style='text-align:center;' rowspan='{{promo.promoted_count()}}'><a href="{{url_for('comp_info',id=promo.company.id)}}">{{promo.company.name}} </a></td>
+
+                                    <td valign='center' style='text-align:center;' rowspan='{{promo.promoted_count()}}'><a href='{{promo.url}}'>{{promo.url}}</a></td>
+
+                                    <td valign='center' style='text-align:center;'><a href="{{url_for('ach_info',id=ach.id)}}">{{ach.group.name}}{%if ach.level%}, lv. {{ach.level}}{%endif%}</a></td>
+
+                                    <td valign='center' style='text-align:center;'>{{promo.clicks_number(ach)}}</td>
+
+                                    <td valign='center' style='text-align:center;' rowspan='{{promo.promoted_count()}}'>{{promo.links_avi}}</td>
+
+                                    <td valign='center' style='text-align:center;' rowspan='{{promo.promoted_count()}}'>{{promo.added.strftime('%B %d, %Y')}}</td>
+
+                                    <td valign='center' rowspan='{{promo.promoted_count()}}' style='text-align:center;'><a href="{{url_for('append_achs_prom',id=promo.id)}}"><button class='btn btn-primary'>Edit Links</button></a></td>
+
+                                    <td valign='center' rowspan='{{promo.promoted_count()}}' style='text-align:center;'><button class='btn btn-warning' onclick="del_promo({{promo.id}},{{k}})">Delete</button></td>
+
+                                    {%else%}
+
+                                    <td valign='center' style='text-align:center;'><a href="{{url_for('ach_info',id=ach.id)}}">{{ach.group.name}}{%if ach.level%}, lv. {{ach.level}}{%endif%}</a></td>
+
+                                    <td valign='center' style='text-align:center;'>{{promo.clicks_number(ach)}}</td>
+
+                                    {%endif%}
+                                </tr>
+                                {%set a=2%}
+                            
+                            {%endfor%}
+
+                            {%else%}
+
+                             <tr class="even pr{{k}}">
+                                    
+                               
+                                    <td valign='center' style='text-align:center;'><a href="{{url_for('comp_info',id=promo.company.id)}}">{{promo.company.name}} </a></td>
+
+                                    <td valign='center' style='text-align:center;' rowspan='{{promo.promoted_count()}}'><a href='{{promo.url}}'>{{promo.url}}</a></td>
+
+                                    <td valign='center' style='text-align:center;'>None</td>
+
+                                    <td valign='center' style='text-align:center;'>None</td>
+
+                                    <td valign='center' style='text-align:center;' rowspan='{{promo.promoted_count()}}'>{{promo.links_avi}}</td>
+
+                                    <td valign='center' style='text-align:center;' rowspan='{{promo.promoted_count()}}'>{{promo.added.strftime('%B %d, %Y')}}</td>
+
+                                    <td valign='center' style='text-align:center;'><a href="{{url_for('append_achs_prom',id=promo.id)}}"><button class='btn btn-primary'>Edit Links</button></a></td>
+
+                                    <td valign='center' style='text-align:center;'><button class='btn btn-warning' onclick="del_promo({{promo.id}},{{k}})">Delete</button></td>
+
+                            </tr>
+
+                            {%endif%}
+
+                        {%else%}
+                            {%if promo.promoted_count()>0%}
+                            
+                            {%for ach in promo.promoted_achievements()%}
+                       
+                                <tr class="odd pr{{k}}">
+                                    {%if a==1%}
+                                
+                                    <td valign='center' style='text-align:center;' rowspan='{{promo.promoted_count()}}'><a href="{{url_for('comp_info',id=promo.company.id)}}">{{promo.company.name}} </a></td>
+
+                                    <td valign='center' style='text-align:center;' rowspan='{{promo.promoted_count()}}'><a href='{{promo.url}}'>{{promo.url}}</a></td>
+
+                                    <td valign='center' style='text-align:center;'><a href="{{url_for('ach_info',id=ach.id)}}">{{ach.group.name}}{%if ach.level%}, lv. {{ach.level}}{%endif%}</a></td>
+
+                                    <td valign='center' style='text-align:center;'>{{promo.clicks_number(ach)}}</td>
+
+                                    <td valign='center' style='text-align:center;' rowspan='{{promo.promoted_count()}}'>{{promo.links_avi}}</td>
+
+                                    <td valign='center' style='text-align:center;' rowspan='{{promo.promoted_count()}}'>{{promo.added.strftime('%B %d, %Y')}}</td>
+
+                                    <td valign='center' rowspan='{{promo.promoted_count()}}' style='text-align:center;'><a href="{{url_for('append_achs_prom',id=promo.id)}}"><button class='btn btn-primary'>Edit Links</button></a></td>
+
+                                    <td valign='center' rowspan='{{promo.promoted_count()}}' style='text-align:center;'><button class='btn btn-warning' onclick="del_promo({{promo.id}},{{k}})">Delete</button></td>
+
+                                    {%else%}
+
+                                    <td valign='center' style='text-align:center;'><a href="{{url_for('ach_info',id=ach.id)}}">{{ach.group.name}}{%if ach.level%}, lv. {{ach.level}}{%endif%}</a></td>
+
+                                    <td valign='center' style='text-align:center;'>{{promo.clicks_number(ach)}}</td>
+
+                                    {%endif%}
+                                </tr>
+                                {%set a=2%}
+                            
+                            
+                            {%endfor%}
+
+                            {%else%}
+
+                             <tr class="odd pr{{k}}">
+                                    
+                               
+                                    <td valign='center' style='text-align:center;'><a href="{{url_for('comp_info',id=promo.company.id)}}">{{promo.company.name}} </a></td>
+
+                                    <td valign='center' style='text-align:center;' rowspan='{{promo.promoted_count()}}'><a href='{{promo.url}}'>{{promo.url}}</a></td>
+
+                                    <td valign='center' style='text-align:center;'>None</td>
+
+                                    <td valign='center' style='text-align:center;'>None</td>
+
+                                    <td valign='center' style='text-align:center;' rowspan='{{promo.promoted_count()}}'>{{promo.links_avi}}</td>
+
+                                    <td valign='center' style='text-align:center;' rowspan='{{promo.promoted_count()}}'>{{promo.added.strftime('%B %d, %Y')}}</td>
+
+                                    <td valign='center' style='text-align:center;'><a href="{{url_for('append_achs_prom',id=promo.id)}}"><button class='btn btn-primary'>Edit Links</button></a></td>
+
+                                    <td valign='center' style='text-align:center;'><button class='btn btn-warning' onclick="del_promo({{promo.id}},{{k}})">Delete</button></td>
+
+                            </tr>
+
+                            {%endif%}
+                        {%endif%}
+                        {%set k=k+1%}
+                        {%endfor%}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+<script type='text/javascript'> 
+
+function del_promo(promo_id,k){
+    var idk='.pr'+k
+    var idk2='#row'+promo_id
+
+    $.post("{{url_for('del_promo')}}",
+    {
+        promo_id:promo_id
+    }).done(function(data){
+
+        $(idk).each(function(){
+                $(this).remove();
+            });
+
+        $(idk2).remove()
+    });
+};
+
+
+
+
+
+$(document).ready(function() {
+
+                $("#banner_promos").tablesorter( {sortList: [[2,0]]} ); 
+
+            });
+
+</script>
+
+
+
+{%endblock%}

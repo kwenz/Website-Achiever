@@ -1,0 +1,153 @@
+
+
+<!DOCTYPE html>
+<html>
+<head>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <link type="text/css" rel="stylesheet" href="{{url_for('static',filename='stylesheet.css')}}"/>
+    <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+    {{ pagedown.html_head() }}
+
+    <title>Achievements</title>
+</head>
+<body>
+    <nav class="navbar navbar-inverse navbar-fixed-top">
+        <div class="container-fluid">
+    <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand"><span class="glyphicon glyphicon-stats" aria-hidden="true" style="color:white"></span> The Achiever</a>
+        </div>
+
+    <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+          <ul class="nav navbar-nav">
+            {%if current_user.role=="user"%}
+            <li><a href="{{url_for('feed')}}">Main Page<span class="sr-only">(current)</span></a></li>
+            <li class="dropdown">
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">My Achievements <span class="caret"></span></a>
+              <ul class="dropdown-menu">
+                <li><a href="{{url_for('list')}}">Full List</a></li>
+                <li><a href="{{url_for('achieved')}}">Achieved</a></li>
+                <li><a href="{{url_for('todos')}}">Bucket List</a></li>
+              </ul>
+            </li>
+            <li class="dropdown">
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">My Profile <span class="caret"></span></a>
+              <ul class="dropdown-menu">
+                <li><a href="{{url_for('user',username=current_user.username)}}">Profile Page</a></li>
+                <li><a href="{{url_for('stories',user_id=current_user.id)}}">My Stories</a></li>
+                <li><a href="#">My Schedule</a></li>
+                <li role="separator" class="divider"></li>
+                <li><a href="{{url_for('edit')}}">Edit</a></li>
+              </ul>
+            </li>
+            <li><a href="{{url_for('companies',page=1)}}">Companies List</a></li>
+            {%elif current_user.role=="admin"%}
+            <li><a href="#">Dashboard<span class="sr-only">(current)</span></a></li>
+            <li class="dropdown">
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Add <span class="caret"></span></a>
+              <ul class="dropdown-menu">
+                <li><a href="{{url_for('categories')}}">Category</a></li>
+                <li><a href="{{url_for('new_website')}}">Website</a></li>
+              </ul>
+            </li>
+            <li class="dropdown">
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Lists <span class="caret"></span></a>
+              <ul class="dropdown-menu">
+                <li><a href="{{url_for('user_list')}}">User List</a></li>
+                <li><a href="{{url_for('company_list')}}">Company List</a></li>
+                <li><a href="{{url_for('achievement_list')}}">Achievement List</a></li>
+                <li><a href="{{url_for('promo_list')}}">Promotion List</a></li>
+                <li><a href="{{url_for('website_list')}}">Website List</a></li>
+              </ul>
+            </li>
+            {%elif current_user.role=="owner"%}
+            {%if current_user.special_companies_avi or current_user.normal_companies_avi%}
+            <li><a href="{{url_for('new_company')}}">New Company</a></li>
+            {%endif%}
+            {%if current_user.promotions_available()%}
+            <li><a href="{{url_for('new_promotion')}}">New Promotion</a></li>
+            {%endif%}
+            <li class="dropdown">
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">My Profile <span class="caret"></span></a>
+              <ul class="dropdown-menu">
+                <li><a href="{{url_for('owner',id=current_user.id)}}">Profile Page</a></li>
+                <li><a href="{{url_for('owned_promotions')}}">My Promotions</a></li>
+                <li><a href="{{url_for('owned_companies')}}">My Companies</a></li>
+                <li role="separator" class="divider"></li>
+                <li><a href="{{url_for('owner_edit')}}">Edit</a></li>
+              </ul>
+            </li>
+            <li><a href="{{url_for('achs_for_owners')}}">Achievement List</a></li>
+          {%endif%}
+            
+          </ul>
+          <ul class="nav navbar-nav navbar-right">         
+            {%if current_user.role=="user"%}
+            
+            <li><a href="{{url_for('search')}}">Search</a></li>
+            {%elif current_user.role=="owner"%}
+            <li><a href="{{url_for('search')}}">Search</a></li>
+            <li><a href="{{url_for('shop')}}">Shop</a></li>
+            {%endif%}
+
+            <li><a href="{{url_for('logout')}}">Logout</a></li>
+          </ul>
+        </div><!-- /.navbar-collapse -->
+      </div><!-- /.container-fluid -->
+    </nav>
+
+    <div class='container' style="margin-top:50px;margin-bottom:50px">
+
+        
+        <div class='row'>
+            <div class='col-md-1'>
+            </div>
+            <div class='col-md-8'>
+                {%include 'story_entry.html'%}
+            </div>
+            <div class='col-md-3'>
+                <br>
+                <br>
+                <br>
+                <br>
+                <br>
+                <div class='sidebar-module'>
+                    {%for ach in story.described%}
+                    {%include 'box_achiev.html'%}
+
+                    <br>
+                    {%endfor%}
+                    <br>
+                    <h4>{{story.user.nickname}}'s latest stories:</h4>
+                    <ol class="list-unstyled">
+                        {%for entry in story.user.stories.order_by(Story.added.desc()).limit(5)%}
+                        <li><a href="{{url_for('story',story_id=entry.id)}}">{{entry.title}}</a></li>
+                        {%endfor%}
+                    </ol>
+                    <br>
+                    <a href="{{url_for('stories',user_id=story.user.id)}}">View all stories</a>
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+    <br>
+    <footer class="footer" style='background-color:rgb(34,34,34);border-top:1px solid rgb(8,8,8)'>
+        <div class="container">
+            <p class="text-muted" style='padding-top:8px'>The Achiever company ltd.</p>
+        </div>
+    </footer>
+</body>
+</html>
+
+
+
